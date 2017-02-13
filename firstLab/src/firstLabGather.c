@@ -6,7 +6,7 @@ int main(int argc,char **argv)
 {
 
   long buffSize = atol(argv[1]);
-  char resbuf[buffSize + 2], sendbuf[buffSize + 2];
+  char resbuf[buffSize], sendbuf[buffSize];
   int rank,commsize;
   int i;
 
@@ -21,10 +21,6 @@ int main(int argc,char **argv)
 
   MPI_Get_processor_name(procname, &len);
   
-  sendbuf[0] = '0' + rank/10;
-  sendbuf[1] = '0' + rank%10;
-  sendbuf[2] = '-';
-
   time = MPI_Wtime();
   if (rank == 0) {
     for (i = 1; i < commsize; i++) {
@@ -35,7 +31,7 @@ int main(int argc,char **argv)
   }
   time = MPI_Wtime() - time;
   if (rank > 0) {
-    printf("Process %d of %d on %s received message (%ld) from %s with time \t= %.6lf\n",rank,commsize,procname,buffSize,resbuf,time);
+    printf("Process %d of %d on %s received message (%ld) with time \t= %.6lf\n",rank,commsize,procname,resbuf,time);
   }
 //  MPI_Send(&sendbuf, buffSize, MPI_CHAR, next, 0, MPI_COMM_WORLD);
 //  MPI_Recv(&resbuf, buffSize, MPI_CHAR, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
