@@ -10,7 +10,7 @@ int main(int argc,char **argv)
   int rank,commsize;
 
   int len;
-  char procname[MPI_MAX_PROCESSOR_NAME]
+  char procname[MPI_MAX_PROCESSOR_NAME];
  
   double time = 0;
 

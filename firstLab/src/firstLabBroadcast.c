@@ -11,7 +11,7 @@ int main(int argc,char **argv)
   int i;
 
   int len;
-  char procname[MPI_MAX_PROCESSOR_NAME]
+  char procname[MPI_MAX_PROCESSOR_NAME];
  
   double time = 0;
 
