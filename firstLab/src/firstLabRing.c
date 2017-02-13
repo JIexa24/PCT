@@ -9,11 +9,16 @@ int main(int argc,char **argv)
   char resbuf[buffSize], sendbuf[buffSize];
   int rank,commsize;
 
+  int len;
+  char procname[MPI_MAX_PROCESSOR_NAME]
+ 
   double time = 0;
 
   MPI_Init(&argc, &argv);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &commsize);
+
+  MPI_Get_processor_name(procname, &len);
 
   int prev = (rank - 1 + commsize) %commsize;
   int next = (rank + 1) % commsize;
@@ -28,7 +33,7 @@ int main(int argc,char **argv)
   if (rank == 0) {
     time = MPI_Wtime() - time;
     //fprintf(data,"Time %d = %.6lf\n colproc = %d\n\n",buffSize,time, commsize);
-  printf("Process %d of %d received message (%ld) from %d with time \t= %.6lf\n",rank,commsize,buffSize,prev, time);
+  printf("Process %d of %d on %s received message (%ld) from %d with time \t= %.6lf\n",rank,commsize,procname,buffSize,prev, time);
   }
 
 

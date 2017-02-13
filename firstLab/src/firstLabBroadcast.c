@@ -10,11 +10,16 @@ int main(int argc,char **argv)
   int rank,commsize;
   int i;
 
+  int len;
+  char procname[MPI_MAX_PROCESSOR_NAME]
+ 
   double time = 0;
 
   MPI_Init(&argc, &argv);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &commsize);
+
+  MPI_Get_processor_name(procname, &len);
 
   time = MPI_Wtime();
   if (rank == 0) {
@@ -26,7 +31,7 @@ int main(int argc,char **argv)
   }
   time = MPI_Wtime() - time;
   if (rank > 0) {
-    printf("Process %d of %d received message (%ld) from %d with time \t= %.6lf\n",rank,commsize,buffSize,0,time);
+    printf("Process %d of %d on %s received message (%ld) from %d with time \t= %.6lf\n",rank,commsize,procname,buffSize,0,time);
   }
 //  MPI_Send(&sendbuf, buffSize, MPI_CHAR, next, 0, MPI_COMM_WORLD);
 //  MPI_Recv(&resbuf, buffSize, MPI_CHAR, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
