@@ -11,7 +11,7 @@ int main(int argc,char **argv)
   int root = 0;
 
   char resbuf[buffSize];
-  char sendbuf[buffSize];
+  char sendresbuf[buffSize];
 
   int len;
   char procname[MPI_MAX_PROCESSOR_NAME];
@@ -27,14 +27,15 @@ int main(int argc,char **argv)
   time = MPI_Wtime();
 
   if (rank == 0) { 
-    MPI_Bcast(&sendbuf, buffSize, MPI_CHAR, root, MPI_COMM_WORLD);
-  } else {
-    MPI_Recv(&resbuf, buffSize, MPI_CHAR, root, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    sendresbuf[0] = (char)(((int)'0')+rank);
   }
+
+  MPI_Bcast(&sendresbuf, buffSize, MPI_CHAR, root, MPI_COMM_WORLD);
+
 
   time = MPI_Wtime() - time;
   if (rank > 0) {
-    printf("Process %d of %d on %s received message (%ld) from %d with time \t= %.6lf\n",rank,commsize,procname,buffSize,0,time);
+    printf("Process %d of %d on %s received message (%ld) with time \t= %.6lf\n",rank,commsize,procname,buffSize,time);
   }
 //  MPI_Send(&sendbuf, buffSize, MPI_CHAR, next, 0, MPI_COMM_WORLD);
 //  MPI_Recv(&resbuf, buffSize, MPI_CHAR, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
