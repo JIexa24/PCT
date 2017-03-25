@@ -3,6 +3,3 @@ compiler: gcc
 script:
 - make OPENMP
 
-compiler: mpicc
-script:
-- make MPI
