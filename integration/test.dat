@@ -1,0 +1,37 @@
+Numerical integration: [-4.000000, 4.000000], n = 10000000
+Result Pi: 3.141592556720
+Serial time (sec.): 0.601572234998
+
+Numerical integration: [-4.000000, 4.000000], n = 10000000
+Result Pi: 3.141595392647
+Elapsed time (sec.): 0.763038036996
+
+Numerical integration: [-4.000000, 4.000000], n = 10000000
+Result Pi: 3.141595496531
+Elapsed time (sec.): 0.554573956993
+
+Numerical integration: [-4.000000, 4.000000], n = 10000000
+Result Pi: 3.141596355896
+Elapsed time (sec.): 0.554642334988
+
+Numerical integration: [-4.000000, 4.000000], n = 10000000
+Result Pi: 3.141597583790
+Elapsed time (sec.): 0.607981154986
+
+
+
+Numerical integration: [-4.000000, 4.000000], n = 10000000
+Result Pi: 3.141595392647
+Elapsed time (sec.): 0.301118297968
+
+Numerical integration: [-4.000000, 4.000000], n = 10000000
+Result Pi: 3.141595496531
+Elapsed time (sec.): 0.151050189976
+
+Numerical integration: [-4.000000, 4.000000], n = 10000000
+Result Pi: 3.141596355896
+Elapsed time (sec.): 0.102180780028
+
+Numerical integration: [-4.000000, 4.000000], n = 10000000
+Result Pi: 3.141597583790
+Elapsed time (sec.): 0.079473118007

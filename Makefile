@@ -3,11 +3,14 @@ CFLAGS = -g3 -O0 -fopenmp -std=c99
 
 all: OPENMP MPI
 
-OPENMP: MATRIX
+OPENMP: MATRIX INTEGR
 
 MATRIX:
 	make -C DGEMV
  
+INTEGR:
+	make -C integration
+
 MPI: FIRSTLAB
 
 FIRSTLAB:
