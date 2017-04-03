@@ -10,6 +10,7 @@ MATRIX:
  
 INTEGR:
 	make -C integration
+	make -C integrationMC
 
 MPI: FIRSTLAB
 
