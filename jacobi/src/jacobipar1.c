@@ -39,6 +39,7 @@ int main(int argc, char *argv[])
   talloc += wtime();
   thr = 2;
   while(thr < 9) {
+  omp_set_num_threads(thr);
   double tinit = -omp_get_wtime();
   // Fill boundary points:
   //- left and right borders are zero filled
@@ -47,18 +48,18 @@ int main(int argc, char *argv[])
   double dx = 1.0 / (nx - 1.0);
   // Initialize top border: u(x, 0) = sin(pi * x)
 
-  #pragma omp parallel num_threads(thr) for
+  #pragma omp parallel for
   for (int j = 0; j < nx; j++) {
     int ind = IND(0, j);
     local_newgrid[ind] = local_grid[ind] = sin(PI * dx * j);
   }
   // Initialize bottom border: u(x, 1) = sin(pi * x) * exp(-pi)
-  #pragma omp parallel num_threads(thr) for
+  #pragma omp parallel for
   for (int j = 0; j < nx; j++) {
     int ind = IND(ny - 1, j);
     local_newgrid[ind] = local_grid[ind] = sin(PI * dx * j) * exp(-PI);
   }
-  #pragma omp parallel num_threads(thr) for
+  #pragma omp parallel  for
   for (int i = 1; i < ny - 1; i++) {
     for (int j = 1; j < nx - 1; j++) {
       local_newgrid[IND(i, j)] = 0.0;
@@ -71,7 +72,7 @@ int main(int argc, char *argv[])
   int niters = 0;
   for (;;) {
     niters++;
-    #pragma omp parallel num_threads(thr) for
+    #pragma omp parallel for 
     for (int i = 1; i < ny - 1; i++) {
       for (int j = 1; j < nx - 1; j++) {
         local_newgrid[IND(i, j)] = (local_grid[IND(i - 1, j)] + local_grid[IND(i + 1, j)] +
@@ -79,7 +80,7 @@ int main(int argc, char *argv[])
       }
     }
     double maxdiff = -DBL_MAX;
-    #pragma omp parallel num_threads(thr) for reduction(max:maxdiff)
+    #pragma omp parallel for reduction(max:maxdiff)
     for (int i = 1; i < ny - 1; i++) {
       for (int j = 1; j < nx - 1; j++) {
       int ind = IND(i, j);
@@ -91,8 +92,8 @@ int main(int argc, char *argv[])
   }
 
   printf("# Heat 2D (serial): grid: rows %d, cols %d\n", rows, cols);
-  printf("# niters %d, total time (sec.): %.6f\n", niters, ttotal);
-  printf("# talloc: %.6f, tinit: %.6f, titers: %.6f\n", talloc, tinit, ttotal - talloc - tinit);
+  printf("# niters %d, total time (sec.): %.6f\n", niters, ttotal+ omp_get_wtime());
+  printf("# talloc: %.6f, tinit: %.6f, titers: %.6f\n", talloc, tinit, ttotal - talloc - tinit +  omp_get_wtime());
   // Save grid
   if (filename) {
      FILE *fout = fopen(filename, "w");
