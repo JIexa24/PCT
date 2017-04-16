@@ -11,6 +11,8 @@ MATRIX:
 INTEGR:
 	make -C integration
 	make -C integrationMC
+	make -C jacobi
+
 
 MPI: FIRSTLAB
 
@@ -20,3 +22,6 @@ FIRSTLAB:
 clean:
 	rm ./DGEMV/obj/*.o
 	rm ./firstLab/obj/*.o
+	rm ./jacobi/obj/*.o
+	rm ./integration/obj/*.o
+	rm ./integrationMC/obj/*.o
