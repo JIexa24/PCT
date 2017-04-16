@@ -20,12 +20,12 @@ set tmargin 2
 set mxtics
 
 set output 'result.png'
-plot "parallel.dat" using 1:2 title "parallel" with linespoints ls 3, \
-	"parallel (FS).dat" using 1:2 title "parallel (FS)" with linespoints ls 2, \
+plot "parallel1.dat" using 1:2 title "parallel v1" with linespoints ls 3, \
+	"parallel2.dat" using 1:2 title "parallel v2" with linespoints ls 2, \
 	"ideal.dat" using 1:2 title "Linear Speedup" with linespoints ls 1
 
-set output 'parallel (FS).png'
-plot "parallel (FS).dat" using 1:2 title "parallel (FS)" with linespoints ls 3
+set output 'parallel v2.png'
+plot "parallel2.dat" using 1:2 title "parallel v2" with linespoints ls 3
 
-set output 'parallel.png'
-plot "parallel.dat" using 1:2 title "parallel" with linespoints ls 2
+set output 'parallel v1.png'
+plot "parallel1.dat" using 1:2 title "parallel v1" with linespoints ls 2
