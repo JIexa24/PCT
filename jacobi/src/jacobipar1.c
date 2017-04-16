@@ -19,6 +19,8 @@ double wtime()
 int main(int argc, char *argv[])
 {
   int thr = 0;
+  thr = 2;
+  while(thr < 9) {
   double ttotal = -omp_get_wtime();
   int rows = (argc > 1) ? atoi(argv[1]) : 100;
   int cols = (argc > 2) ? atoi(argv[2]) : 100;
@@ -37,8 +39,7 @@ int main(int argc, char *argv[])
   double *local_grid = malloc(ny * nx * sizeof(*local_grid));
   double *local_newgrid = malloc(ny * nx * sizeof(*local_newgrid));
   talloc += wtime();
-  thr = 2;
-  while(thr < 9) {
+
   omp_set_num_threads(thr);
   double tinit = -omp_get_wtime();
   // Fill boundary points:
@@ -48,18 +49,18 @@ int main(int argc, char *argv[])
   double dx = 1.0 / (nx - 1.0);
   // Initialize top border: u(x, 0) = sin(pi * x)
 
-  #pragma omp parallel for
+#pragma omp parallel for //schedule (dynamic) num_threads(thr)
   for (int j = 0; j < nx; j++) {
     int ind = IND(0, j);
     local_newgrid[ind] = local_grid[ind] = sin(PI * dx * j);
   }
   // Initialize bottom border: u(x, 1) = sin(pi * x) * exp(-pi)
-  #pragma omp parallel for
+#pragma omp parallel for //schedule (dynamic) num_threads(thr)
   for (int j = 0; j < nx; j++) {
     int ind = IND(ny - 1, j);
     local_newgrid[ind] = local_grid[ind] = sin(PI * dx * j) * exp(-PI);
   }
-  #pragma omp parallel  for
+#pragma omp parallel for //schedule (dynamic) num_threads(thr)
   for (int i = 1; i < ny - 1; i++) {
     for (int j = 1; j < nx - 1; j++) {
       local_newgrid[IND(i, j)] = 0.0;
@@ -72,7 +73,7 @@ int main(int argc, char *argv[])
   int niters = 0;
   for (;;) {
     niters++;
-    #pragma omp parallel for 
+#pragma omp parallel for// schedule (dynamic) num_threads(thr)
     for (int i = 1; i < ny - 1; i++) {
       for (int j = 1; j < nx - 1; j++) {
         local_newgrid[IND(i, j)] = (local_grid[IND(i - 1, j)] + local_grid[IND(i + 1, j)] +
@@ -80,7 +81,7 @@ int main(int argc, char *argv[])
       }
     }
     double maxdiff = -DBL_MAX;
-    #pragma omp parallel for reduction(max:maxdiff)
+    #pragma omp parallel for reduction(max:maxdiff) //num_threads(thr)
     for (int i = 1; i < ny - 1; i++) {
       for (int j = 1; j < nx - 1; j++) {
       int ind = IND(i, j);

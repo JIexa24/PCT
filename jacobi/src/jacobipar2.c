@@ -19,6 +19,8 @@ double wtime()
 int main(int argc, char *argv[])
 {
   int thr = 0;
+  thr = 2;
+  while(thr < 9) {
   double ttotal = -omp_get_wtime();
   int rows = (argc > 1) ? atoi(argv[1]) : 100;
   int cols = (argc > 2) ? atoi(argv[2]) : 100;
@@ -37,8 +39,6 @@ int main(int argc, char *argv[])
   double *local_grid = malloc(ny * nx * sizeof(*local_grid));
   double *local_newgrid = malloc(ny * nx * sizeof(*local_newgrid));
   talloc += wtime();
-  thr = 2;
-  while(thr < 9) {
   omp_set_num_threads(thr);
 
   double tinit = -omp_get_wtime();

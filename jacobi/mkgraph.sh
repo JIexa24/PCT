@@ -12,7 +12,7 @@ set mytics 1
 set format x "%1.0f"
 set format y "%.1f"
 set xlabel "Threads" font "Arial, 16"
-set ylabel "Speedup" font "Arial, 16"
+set ylabel "Speedup (rows = 5000 , cols = 5000)" font "Arial, 16"
 set xtics 2 font "Arial, 10"
 set ytics 0.5 font "Arial, 10"
 set rmargin 4
