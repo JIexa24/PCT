@@ -1,0 +1,11 @@
+Result: 1.066754201157, n 10000000
+time = 1.532473
+Numerical integration by Monte Carlo method: n = 10000000
+Result: 1.066083860241, n 10000000
+time = 0.763621
+Result: 1.066445065344, n 10000000
+time = 0.384036
+Result: 1.066366896672, n 10000000
+time = 0.256548
+Result: 1.066533502381, n 10000000
+time = 0.193498
