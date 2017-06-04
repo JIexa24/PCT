@@ -13,7 +13,7 @@ COUNTPAR: ./obj/counterpar.o
 	$(CC) ./obj/counterpar.o -o ./bin/counterpar $(CFLAGS)
 
 ./obj/counterpar.o: ./src/counterpar.c
-	$(CC) -c ./src/counterpar.c -o ./obj/counterpar.o -std=c99
+	$(CC) -c ./src/counterpar.c -o ./obj/counterpar.o -std=c99 $(CFLAGS)
 
 clean:
 	rm ./obj/*.o
