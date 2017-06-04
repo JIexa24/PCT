@@ -36,6 +36,7 @@ int main(int argc, char *argv[])
     double t = wtime();
     #pragma omp parallel num_threads(2)
     {
+      int tid = omp_get_thread_num();
       #pragma omp for
       for (int i = 0; i < n; i++) {
         if (v[i] == 3) {
