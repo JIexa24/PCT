@@ -28,7 +28,7 @@ void quicksort_tasks(int *v, int low, int high, int threshold) {
     if(i < high)
       quicksort_tasks(v, i, high, threshold);
   } else {
-    #pragma omp task
+    #pragma omp task untied
     {
       quicksort_tasks(v, low, j, threshold);
     }
