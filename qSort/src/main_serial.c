@@ -34,7 +34,7 @@ int main(int argc, char **argv)
   int size = 1000000;
   if (argc > 1)
     size = atoi(argv[1]);
-  int *array = malloc(sizeof(int) * size);;
+  int *array = malloc(sizeof(int) * size);
   for (int i = 0; i < size; ++i) {
     array[i] = rand() % size;
   }
