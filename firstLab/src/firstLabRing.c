@@ -18,7 +18,9 @@ int main(int argc,char **argv)
 
   MPI_Get_processor_name(procname, &len);
   
-  char resbuf[buffSize], sendbuf[buffSize];
+  char *resbuf, *sendbuf;
+  resbuf = malloc(sizeof(char) * commsize * buffSize);
+  sendbuf = malloc(sizeof(char) * commsize * buffSize);
   int i = 0;  
   for (i = 0; i < buffSize - 1; i++) {
      sendbuf[i] = (rand() % ('z' - 'a') + 'a' + rank) % ('z' - 'a');
