@@ -9,14 +9,14 @@ int main(int argc,char **argv)
   int len;
   char procname[MPI_MAX_PROCESSOR_NAME];
   char *resbuf, *sendbuf;
-
+  resbuf = malloc(sizeof(char) * buffSize);
+  sendbuf = malloc(sizeof(char) * buffSize);
+  
   MPI_Init(&argc, &argv);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &commsize);
   MPI_Get_processor_name(procname, &len);
 
-  resbuf = malloc(sizeof(char) * buffSize);
-  sendbuf = malloc(sizeof(char) * buffSize);
   int i = 0;
   for (i = 0; i < buffSize - 1; i++) {
      sendbuf[i] = (rand() % ('z' - 'a') + 'a' + rank) % ('z' - 'a');
@@ -38,6 +38,6 @@ int main(int argc,char **argv)
   MPI_Finalize();
   free(sendbuf);
   free(resbuf);
-  
+
   return 0;
 }

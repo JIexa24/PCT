@@ -11,6 +11,9 @@ int main(int argc,char **argv)
   char procname[MPI_MAX_PROCESSOR_NAME];
   char *resbuf;
   char *sendbuf;
+  resbuf = malloc(sizeof(char) * buffSize);
+  sendbuf = malloc(sizeof(char) * buffSize);
+
   MPI_Init(&argc, &argv);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &commsize);
@@ -18,13 +21,10 @@ int main(int argc,char **argv)
 
   int i = 0;
   if (rank > 0) {
-    sendbuf = malloc(sizeof(char) * buffSize);
     for (i = 0; i < buffSize - 1; i++) {
        sendbuf[i] = (rand() % ('z' - 'a') + 'a' + rank) % ('z' - 'a');
     }
     sendbuf[buffSize - 1] = '\0';
-  } else if (rank == 0){
-    resbuf = malloc(sizeof(char) * buffSize);
   }
 
   double time = MPI_Wtime();
@@ -38,11 +38,9 @@ int main(int argc,char **argv)
 //  MPI_Recv(&resbuf, buffSize, MPI_CHAR, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
   MPI_Finalize();
-  if (rank == 0) {
-    free(resbuf);
-  } else if (rank > 0) {
-    free(sendbuf);
-  }
-  
+
+  free(resbuf);
+  free(sendbuf);
+
   return 0;
 }
