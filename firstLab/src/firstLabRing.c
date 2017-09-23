@@ -9,9 +9,9 @@ int main(int argc,char **argv)
   int len;
   char procname[MPI_MAX_PROCESSOR_NAME];
   char *resbuf, *sendbuf;
-  resbuf = malloc(sizeof(char) * buffSize);
-  sendbuf = malloc(sizeof(char) * buffSize);
-  
+  resbuf = (char*)malloc(sizeof(char) * buffSize);
+  sendbuf = (char*)malloc(sizeof(char) * buffSize);
+
   MPI_Init(&argc, &argv);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &commsize);
@@ -29,7 +29,7 @@ int main(int argc,char **argv)
   //MPI_Recv(&resbuf, buffSize, MPI_CHAR, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
   double time = MPI_Wtime();
-  MPI_Sendrecv(&sendbuf, buffSize, MPI_CHAR, next, 0, &resbuf, buffSize, MPI_CHAR, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+  MPI_Sendrecv(sendbuf, buffSize, MPI_CHAR, next, 0, resbuf, buffSize, MPI_CHAR, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
   time = MPI_Wtime() - time;
 
   //fprintf(data,"Time %d = %.6lf\n colproc = %d\n\n",buffSize,time, commsize);
