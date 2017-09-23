@@ -1,0 +1,7 @@
+#PBS -N firstLabAlltoallx8x8
+#PBS -l nodes=8:ppn=8
+#PBS -j oe
+
+cd $PBS_O_WORKDIR
+
+mpiexec ./bin/firstLabAlltoall 1024

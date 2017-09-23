@@ -1,0 +1,9 @@
+#PBS -N firstLabGatherx8x8
+#PBS -l nodes=8:ppn=8
+#PBS -j oe
+
+cd $PBS_O_WORKDIR
+
+mpiexec ./bin/firstLabGather 1
+mpiexec ./bin/firstLabGather 1024
+mpiexec ./bin/firstLabGather 1048576

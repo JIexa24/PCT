@@ -1,0 +1,9 @@
+#PBS -N firstLabRingx1x8
+#PBS -l nodes=1:ppn=8
+#PBS -j oe
+
+cd $PBS_O_WORKDIR
+
+mpiexec ./bin/firstLabRing 1
+mpiexec ./bin/firstLabRing 1024
+mpiexec ./bin/firstLabRing 1048576
