@@ -11,13 +11,13 @@ int main(int argc,char **argv)
   char procname[MPI_MAX_PROCESSOR_NAME];
   char *resbuf;
   char *sendbuf;
-  resbuf = malloc(sizeof(char) * buffSize);
   sendbuf = malloc(sizeof(char) * buffSize);
 
   MPI_Init(&argc, &argv);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &commsize);
   MPI_Get_processor_name(procname, &len);
+  resbuf = malloc(sizeof(char) * buffSize * commsize);
 
   int i = 0;
   if (rank > 0) {
