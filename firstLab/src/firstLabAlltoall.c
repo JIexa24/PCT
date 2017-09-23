@@ -17,8 +17,8 @@ int main(int argc,char **argv)
   char *resbuf;
   char *sendbuf;
   int i = 0;
-  resbuf = malloc(sizeof(char) * commsize * buffSize);
-  sendbuf = malloc(sizeof(char) * commsize * buffSize);
+  resbuf = malloc(sizeof(char) * buffSize);
+  sendbuf = malloc(sizeof(char) * buffSize);
 
   for (i = 0; i < buffSize - 1; i++) {
      sendbuf[i] = (rand() % ('z' - 'a') + 'a' + rank) % ('z' - 'a');

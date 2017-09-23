@@ -17,7 +17,7 @@ int main(int argc,char **argv)
   MPI_Get_processor_name(procname, &len);
 
   char* sendresbuf;
-  sendresbuf = malloc(sizeof(char) * commsize * buffSize);
+  sendresbuf = malloc(sizeof(char)* buffSize);
   if (rank == 0) {
     int i = 0;
     for (i = 0; i < buffSize - 1; i++) {

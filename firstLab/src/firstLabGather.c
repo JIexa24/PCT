@@ -19,13 +19,13 @@ int main(int argc,char **argv)
   char *sendbuf;
   int i = 0;
   if (rank > 0) {
-    sendbuf = malloc(sizeof(char) * commsize * buffSize);
+    sendbuf = malloc(sizeof(char) * buffSize);
     for (i = 0; i < buffSize - 1; i++) {
        sendbuf[i] = (rand() % ('z' - 'a') + 'a' + rank) % ('z' - 'a');
     }
     sendbuf[buffSize - 1] = '\0';
-  } else {
-    resbuf = malloc(sizeof(char) * commsize * buffSize);
+  } else if (rank == 0){
+    resbuf = malloc(sizeof(char) * buffSize);
   }
 
   double time = MPI_Wtime();
@@ -33,7 +33,7 @@ int main(int argc,char **argv)
   time = MPI_Wtime() - time;
 
   if (rank > 0) {
-    printf("Process %d of %d on %s received message (%ld) with time \t= %.6lf\n",rank,commsize,procname,buffSize,time);
+    printf("Process %d of %d on %s received message (%ld) with time \t= %.6lf\n", rank, commsize, procname, buffSize, time);
   }
 //  MPI_Send(&sendbuf, buffSize, MPI_CHAR, next, 0, MPI_COMM_WORLD);
 //  MPI_Recv(&resbuf, buffSize, MPI_CHAR, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
