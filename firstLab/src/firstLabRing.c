@@ -8,13 +8,13 @@ int main(int argc,char **argv)
   int rank,commsize;
   int len;
   char procname[MPI_MAX_PROCESSOR_NAME];
-  char *resbuf, *sendbuf;
+  char *recvbuf, *sendbuf;
 
   MPI_Init(&argc, &argv);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &commsize);
   MPI_Get_processor_name(procname, &len);
-  resbuf = (char*)malloc(sizeof(char) * buffSize);
+  recvbuf = (char*)malloc(sizeof(char) * buffSize);
   sendbuf = (char*)malloc(sizeof(char) * buffSize);
 
   int i = 0;
@@ -26,17 +26,17 @@ int main(int argc,char **argv)
   int next = (rank + 1) % commsize;
 
   //MPI_Send(&sendbuf, buffSize, MPI_CHAR, next, 0, MPI_COMM_WORLD);
-  //MPI_Recv(&resbuf, buffSize, MPI_CHAR, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+  //MPI_Recv(&recvbuf, buffSize, MPI_CHAR, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
   double time = MPI_Wtime();
-  MPI_Sendrecv(sendbuf, buffSize, MPI_CHAR, next, 0, resbuf, buffSize, MPI_CHAR, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+  MPI_Sendrecv(sendbuf, buffSize, MPI_CHAR, next, 0, recvbuf, buffSize, MPI_CHAR, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
   time = MPI_Wtime() - time;
 
   //fprintf(data,"Time %d = %.6lf\n colproc = %d\n\n",buffSize,time, commsize);
   printf("Process %d of %d on %s received message (%ld) from %d with time \t= %.6lf\n",rank,commsize,procname,buffSize,prev, time);
 
   free(sendbuf);
-  free(resbuf);
+  free(recvbuf);
 
   MPI_Finalize();
 
