@@ -9,13 +9,13 @@ int main(int argc,char **argv)
   int len;
   char procname[MPI_MAX_PROCESSOR_NAME];
   char *resbuf, *sendbuf;
-  resbuf = (char*)malloc(sizeof(char) * buffSize);
-  sendbuf = (char*)malloc(sizeof(char) * buffSize);
 
   MPI_Init(&argc, &argv);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &commsize);
   MPI_Get_processor_name(procname, &len);
+  resbuf = (char*)malloc(sizeof(char) * buffSize);
+  sendbuf = (char*)malloc(sizeof(char) * buffSize);
 
   int i = 0;
   for (i = 0; i < buffSize - 1; i++) {
@@ -35,9 +35,10 @@ int main(int argc,char **argv)
   //fprintf(data,"Time %d = %.6lf\n colproc = %d\n\n",buffSize,time, commsize);
   printf("Process %d of %d on %s received message (%ld) from %d with time \t= %.6lf\n",rank,commsize,procname,buffSize,prev, time);
 
-  MPI_Finalize();
   free(sendbuf);
   free(resbuf);
+
+  MPI_Finalize();
 
   return 0;
 }

@@ -11,13 +11,13 @@ int main(int argc,char **argv)
   char procname[MPI_MAX_PROCESSOR_NAME];
   char *resbuf;
   char *sendbuf;
-  sendbuf = malloc(sizeof(char) * buffSize);
 
   MPI_Init(&argc, &argv);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &commsize);
   MPI_Get_processor_name(procname, &len);
   resbuf = malloc(sizeof(char) * buffSize * commsize);
+  sendbuf = malloc(sizeof(char) * buffSize);
 
   int i = 0;
   if (rank > 0) {
@@ -36,11 +36,9 @@ int main(int argc,char **argv)
   }
 //  MPI_Send(&sendbuf, buffSize, MPI_CHAR, next, 0, MPI_COMM_WORLD);
 //  MPI_Recv(&resbuf, buffSize, MPI_CHAR, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-
-  MPI_Finalize();
-
   free(resbuf);
   free(sendbuf);
 
+  MPI_Finalize();
   return 0;
 }

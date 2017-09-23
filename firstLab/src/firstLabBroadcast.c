@@ -10,7 +10,6 @@ int main(int argc,char **argv)
   int len;
   char* sendresbuf;
   char procname[MPI_MAX_PROCESSOR_NAME];
-  sendresbuf = malloc(sizeof(char)* buffSize);
 
   MPI_Comm comm;
   MPI_Init(&argc, &argv);
@@ -18,6 +17,7 @@ int main(int argc,char **argv)
   MPI_Comm_size(MPI_COMM_WORLD, &commsize);
   MPI_Get_processor_name(procname, &len);
 
+  sendresbuf = malloc(sizeof(char)* buffSize);
   if (rank == 0) {
     int i = 0;
     for (i = 0; i < buffSize - 1; i++) {
@@ -33,10 +33,10 @@ int main(int argc,char **argv)
   if (rank > 0) {
     printf("Process %d of %d on %s received message (%ld) with time \t= %.6lf\n", rank, commsize, procname, buffSize, time);
   }
+  free(sendresbuf);
   //MPI_Send(&sendbuf, buffSize, MPI_CHAR, next, 0, MPI_COMM_WORLD);
   //MPI_Recv(&resbuf, buffSize, MPI_CHAR, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE););
   MPI_Finalize();
-  free(sendresbuf);
 
   return 0;
 }
