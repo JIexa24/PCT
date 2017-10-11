@@ -34,9 +34,9 @@ int main(int argc,char **argv)
   if (rank == root) {
     for (i = 0; i < commsize; i++) {
       if (i == root) continue;
-      MPI_Irecv(&(recvbuf[(i > root ? i - 1 : i) * buffSize]), buffSize, MPI_CHAR, i, 0, MPI_COMM_WORLD, &(req[(i > root ? i - 1 : i)]));
+      MPI_Recv(&(recvbuf[(i > root ? i - 1 : i) * buffSize]), buffSize, MPI_CHAR, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+      MPI_Waitall(commsize - 1, req, stat);
     }
-    MPI_Waitall(commsize - 1, req, stat);
   } else {
     MPI_Send(&sendbuf, buffSize, MPI_CHAR, root, 0, MPI_COMM_WORLD);
   }
