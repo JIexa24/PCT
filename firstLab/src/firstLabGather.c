@@ -16,8 +16,8 @@ int main(int argc,char **argv)
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &commsize);
   MPI_Get_processor_name(procname, &len);
-  recvbuf = malloc(sizeof(char) * buffSize * (commsize));
-  sendbuf = malloc(sizeof(char) * buffSize);
+  if (rank == root)recvbuf = malloc(sizeof(char) * buffSize * (commsize - 1));
+  else sendbuf = malloc(sizeof(char) * buffSize);
   MPI_Request req[commsize - 1];
   MPI_Status stats[commsize - 1];
   int i = 0;
@@ -35,6 +35,7 @@ int main(int argc,char **argv)
       MPI_Irecv(&(recvbuf[(i > root ? i - 1 : i) * buffSize]), buffSize, MPI_CHAR, i, 0, MPI_COMM_WORLD, &(req[i > root ? i - 1 : i]));
     }
     MPI_Waitall(commsize - 1, req, stats);
+    MPI_Waitall(commsize - 1, req, stats);
   } else {
     MPI_Send(&sendbuf, buffSize, MPI_CHAR, root, 0, MPI_COMM_WORLD);
   }
@@ -46,8 +47,8 @@ int main(int argc,char **argv)
   }
 //  MPI_Send(&sendbuf, buffSize, MPI_CHAR, next, 0, MPI_COMM_WORLD);
 //  MPI_Recv(&recvbuf, buffSize, MPI_CHAR, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-  free(recvbuf);
-  free(sendbuf);
+  if (rank == root) free(recvbuf);
+  else free(sendbuf);
 
   MPI_Finalize();
   return 0;
