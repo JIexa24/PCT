@@ -30,14 +30,14 @@ int main(int argc,char **argv)
   for (i = 0; i < commsize; i++) {
     if (i == rank) continue;
       MPI_Isend(&sendbuf, buffSize, MPI_CHAR, i, 0, MPI_COMM_WORLD, &(req[(i > rank ? i - 1 : i)]));
-      
+
       MPI_Recv(&(recvbuf[(i > rank ? i - 1 : i) * buffSize]), buffSize, MPI_CHAR, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
   }
 /*  MPI_Alltoall(sendbuf, buffSize, MPI_CHAR,
                recvbuf, buffSize, MPI_CHAR, MPI_COMM_WORLD);  */
   time = MPI_Wtime() - time;
 
-  printf("Process %d of %d on %s received message (%ld) with time \t= %.6lf\n", rank, commsize, procname, buffSize, time);
+  printf("Process %d of %d on %s(%s) received message (%ld) with time \t= %.6lf\n", rank, commsize, procname,recvbuf, buffSize, time);
 
   //MPI_Send(&sendbuf, buffSize, MPI_CHAR, next, 0, MPI_COMM_WORLD);
   //MPI_Recv(&recvbuf, buffSize, MPI_CHAR, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
