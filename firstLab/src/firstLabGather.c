@@ -37,8 +37,8 @@ int main(int argc,char **argv)
     }
     MPI_Waitall(commsize - 1, req, MPI_STATUS_IGNORE);
   } else {
-    MPI_Isend(&sendbuf, buffSize, MPI_CHAR, root, 0, MPI_COMM_WORLD, &req1);
-    MPI_Waitall(1, &req1, MPI_STATUS_IGNORE);
+    MPI_Isend(sendbuf, buffSize, MPI_CHAR, root, 0, MPI_COMM_WORLD, &req1);
+    MPI_Wait(&req1, MPI_STATUS_IGNORE);
   }
 
 //  MPI_Gather(sendbuf, buffSize, MPI_CHAR, recvbuf, buffSize, MPI_CHAR, root, MPI_COMM_WORLD);
