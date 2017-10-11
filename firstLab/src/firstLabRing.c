@@ -32,7 +32,7 @@ int main(int argc,char **argv)
   MPI_Sendrecv(sendbuf, buffSize, MPI_CHAR, next, 0, recvbuf, buffSize, MPI_CHAR, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
   time = MPI_Wtime() - time;
   int flag = 0;
-  for (i = 0; i < buffSize - 1; i++) {
+  for (i = 0; i < buffSize; i++) {
      if (sendbuf[i] != recvbuf[i]) {
        flag = 1;
      }
