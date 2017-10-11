@@ -47,7 +47,7 @@ int main(int argc,char **argv)
      }
   }
   if (rank > 0) {
-    printf("Process %d of %d on %s(%d) received message (%ld) from %d with time \t= %.6lf\n",rank,commsize,procname, flag,buffSize,prev, time);
+    printf("Process %d of %d on %s(%d) received message (%ld) with time \t= %.6lf\n",rank,commsize,procname, flag,buffSize, time);
   }
   free(sendbuf);
   free(recvbuf);
