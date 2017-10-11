@@ -37,8 +37,13 @@ int main(int argc,char **argv)
 /*  MPI_Alltoall(sendbuf, buffSize, MPI_CHAR,
                recvbuf, buffSize, MPI_CHAR, MPI_COMM_WORLD);  */
   time = MPI_Wtime() - time;
-
-  printf("Process %d of %d on %s(\n%s\n%s\n) received message (%ld) with time \t= %.6lf\n", rank, commsize, procname,sendbuf,recvbuf, buffSize, time);
+  int flag = 0;
+  for (i = 0; i < buffSize - 1; i++) {
+     if (sendbuf[i] != recvbuf[i]) {
+       flag = 1;
+     }
+  }
+  printf("Process %d of %d on %s(%d) received message (%ld) with time \t= %.6lf\n", rank, commsize, procname, flag, buffSize, time);
 
   //MPI_Send(&sendbuf, buffSize, MPI_CHAR, next, 0, MPI_COMM_WORLD);
   //MPI_Recv(&recvbuf, buffSize, MPI_CHAR, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
