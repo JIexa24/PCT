@@ -31,11 +31,11 @@ int main(int argc,char **argv)
   if (rank == root)
     time = MPI_Wtime();
 
-  while (1) {
-    if (a +  h * commsize * i >= b) break;
-    sumloc += func(a + h * (i++ + 0.5));
-  }
+  for (i = rank; i < n; i += commsize)
+    sumloc += func(a + h * (i++ + 0.5) * commsize);
+
   sumloc = sumloc * h;
+
   if (rank == root) {
     MPI_Reduce(&sumloc, &sum, 1, MPI_DOUBLE, MPI_SUM, root, MPI_COMM_WORLD);
     time = MPI_Wtime() - time;
