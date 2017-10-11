@@ -18,10 +18,10 @@ int main(int argc,char **argv)
   MPI_Comm_size(MPI_COMM_WORLD, &commsize);
   MPI_Get_processor_name(procname, &len);
 
+  int i = 0;
   if (rank == root) sendbuf = malloc(sizeof(char) * buffSize);
   else recvbuf = malloc(sizeof(char) * buffSize);
   if (rank == 0) {
-    int i = 0;
     for (i = 0; i < buffSize - 1; i++) {
        sendbuf[i] = (rand() % ('z' - 'a') + 'a' + rank) % ('z' - 'a');
     }
@@ -43,7 +43,8 @@ int main(int argc,char **argv)
   if (rank > 0) {
     printf("Process %d of %d on %s received message (%ld) with time \t= %.6lf\n", rank, commsize, procname, buffSize, time);
   }
-  free(sendrecvbuf);
+  free(sendbuf);
+  free(recvbuf);
   //MPI_Send(&sendbuf, buffSize, MPI_CHAR, next, 0, MPI_COMM_WORLD);
   //MPI_Recv(&recvbuf, buffSize, MPI_CHAR, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE););
   MPI_Finalize();

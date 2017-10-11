@@ -5,7 +5,7 @@
 int main(int argc,char **argv)
 {
   long buffSize = atol(argv[1]);
-  int rank,commsize;
+  int rank, commsize;
   int len;
   char procname[MPI_MAX_PROCESSOR_NAME];
   char *recvbuf, *sendbuf;
@@ -22,7 +22,7 @@ int main(int argc,char **argv)
      sendbuf[i] = (rand() % ('z' - 'a') + 'a' + rank) % ('z' - 'a');
   }
   sendbuf[buffSize - 1] = '\0';
-  int prev = (rank - 1 + commsize) %commsize;
+  int prev = (rank - 1 + commsize) % commsize;
   int next = (rank + 1) % commsize;
 
   //MPI_Send(&sendbuf, buffSize, MPI_CHAR, next, 0, MPI_COMM_WORLD);
