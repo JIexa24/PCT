@@ -38,9 +38,15 @@ int main(int argc,char **argv)
   }
 //  MPI_Gather(sendbuf, buffSize, MPI_CHAR, recvbuf, buffSize, MPI_CHAR, root, MPI_COMM_WORLD);
   time = MPI_Wtime() - time;
-
+  int flag = 0;
+  for (i = 0; i < buffSize; i++) {
+     if (sendbuf[i] != recvbuf[i]) {
+       flag = 1;
+       break;
+     }
+  }
   if (rank > 0) {
-    printf("Process %d of %d on %s received message (%ld) with time \t= %.6lf\n", rank, commsize, procname, buffSize, time);
+    printf("Process %d of %d on %s(%d) received message (%ld) from %d with time \t= %.6lf\n",rank,commsize,procname, flag,buffSize,prev, time);
   }
 //  MPI_Send(&sendbuf, buffSize, MPI_CHAR, next, 0, MPI_COMM_WORLD);
 //  MPI_Recv(&recvbuf, buffSize, MPI_CHAR, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
