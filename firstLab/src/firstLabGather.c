@@ -16,9 +16,9 @@ int main(int argc,char **argv)
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &commsize);
   MPI_Get_processor_name(procname, &len);
-  if (rank == root)recvbuf = malloc(sizeof(char) * buffSize * (commsize - 1));
+  if (rank == root) recvbuf = malloc(sizeof(char) * buffSize * (commsize - 1));
   else sendbuf = malloc(sizeof(char) * buffSize);
-  
+
   int i = 0;
   if (rank > 0) {
     for (i = 0; i < buffSize - 1; i++) {

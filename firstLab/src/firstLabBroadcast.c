@@ -8,7 +8,8 @@ int main(int argc,char **argv)
   int rank,commsize;
   int root = 0;
   int len;
-  char* sendrecvbuf;
+  char *recvbuf;
+  char *sendbuf;
   char procname[MPI_MAX_PROCESSOR_NAME];
 
   MPI_Comm comm;
@@ -17,17 +18,26 @@ int main(int argc,char **argv)
   MPI_Comm_size(MPI_COMM_WORLD, &commsize);
   MPI_Get_processor_name(procname, &len);
 
-  sendrecvbuf = malloc(sizeof(char)* buffSize);
+  if (rank == root) sendbuf = malloc(sizeof(char) * buffSize);
+  else recvbuf = malloc(sizeof(char) * buffSize);
   if (rank == 0) {
     int i = 0;
     for (i = 0; i < buffSize - 1; i++) {
-       sendrecvbuf[i] = (rand() % ('z' - 'a') + 'a' + rank) % ('z' - 'a');
+       sendbuf[i] = (rand() % ('z' - 'a') + 'a' + rank) % ('z' - 'a');
     }
-    sendrecvbuf[buffSize - 1] = '\0';
+    sendbuf[buffSize - 1] = '\0';
   }
 
   double time = MPI_Wtime();
-  MPI_Bcast(sendrecvbuf, buffSize, MPI_CHAR, root, MPI_COMM_WORLD);
+  if (rank == root) {
+    for (i = 0; i < commsize; i++) {
+      if (i == root) continue;
+      MPI_Send(&sendbuf, buffSize, MPI_CHAR, i, 0, MPI_COMM_WORLD);
+    }
+  } else {
+    MPI_Recv(&recvbuf, buffSize, MPI_CHAR, root, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+  }
+  //MPI_Bcast(sendrecvbuf, buffSize, MPI_CHAR, root, MPI_COMM_WORLD);
   time = MPI_Wtime() - time;
 
   if (rank > 0) {
