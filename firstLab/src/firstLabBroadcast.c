@@ -34,7 +34,7 @@ int main(int argc,char **argv)
   if (rank == root) {
     for (i = 0; i < commsize; i++) {
       if (i == root) continue;
-      MPI_Isend(sendbuf, buffSize, MPI_CHAR, i, 0, MPI_COMM_WORLD, &(req[(i > root ? i - 1 : i)]));
+      MPI_Isend(&sendbuf, buffSize, MPI_CHAR, i, 0, MPI_COMM_WORLD, &(req[(i > root ? i - 1 : i)]));
     }
     MPI_Waitall(commsize - 1, req, MPI_STATUS_IGNORE);
   } else {
