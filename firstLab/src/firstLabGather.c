@@ -19,6 +19,7 @@ int main(int argc,char **argv)
   recvbuf = malloc(sizeof(char) * buffSize * (commsize));
   sendbuf = malloc(sizeof(char) * buffSize);
   MPI_Request req[commsize - 1];
+  MPI_Status stats[commsize - 1];
   int i = 0;
   if (rank > 0) {
     for (i = 0; i < buffSize - 1; i++) {
@@ -31,9 +32,9 @@ int main(int argc,char **argv)
   if (rank == root) {
     for (i = 0; i < commsize; i++) {
       if (i == root) continue;
-      MPI_Irecv(&(recvbuf[(i > root ? i - 1 : i) * buffSize]), buffSize, MPI_CHAR, i, 0, MPI_COMM_WORLD, req[i > root ? i - 1 : i]);
+      MPI_Irecv(&(recvbuf[(i > root ? i - 1 : i) * buffSize]), buffSize, MPI_CHAR, i, 0, MPI_COMM_WORLD, &(req[i > root ? i - 1 : i]));
     }
-    MPI_Waitall(commsize - 1, req, NULL);
+    MPI_Waitall(commsize - 1, req, stats);
   } else {
     MPI_Send(&sendbuf, buffSize, MPI_CHAR, root, 0, MPI_COMM_WORLD);
   }
