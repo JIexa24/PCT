@@ -11,7 +11,7 @@ double func(double x)
 int main(int argc,char **argv)
 {
   double a = atol(argv[1]);
-  double b = atol(argv[1]);
+  double b = atol(argv[2]);
   int n = atoi(argv[3]);
   double h = (b - a) / n;
   double sum = 0.0;
@@ -32,7 +32,7 @@ int main(int argc,char **argv)
     time = MPI_Wtime();
 
   while (1) {
-    if (a +  h * commsize * i > b) break;
+    if (a +  h * commsize * i >= b) break;
     sumloc += func(a + h * (i++ + 0.5));
   }
   sumloc = sumloc * h;
