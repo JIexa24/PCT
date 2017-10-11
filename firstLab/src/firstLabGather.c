@@ -19,6 +19,7 @@ int main(int argc,char **argv)
   if (rank == root) recvbuf = malloc(sizeof(char) * buffSize * (commsize - 1));
   else sendbuf = malloc(sizeof(char) * buffSize);
   MPI_Request req[commsize - 1];
+  MPI_Request req1;
   int i = 0;
   if (rank > 0) {
     for (i = 0; i < buffSize - 1; i++) {
@@ -33,11 +34,14 @@ int main(int argc,char **argv)
       if (i == root) continue;
 //      MPI_Recv(&(recvbuf[(i > root ? i - 1 : i) * buffSize]), buffSize, MPI_CHAR, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
       MPI_Irecv(&(recvbuf[(i > root ? i - 1 : i) * buffSize]), buffSize, MPI_CHAR, i, 0, MPI_COMM_WORLD, &(req[(i > root ? i - 1 : i)]));
-      MPI_Waitall(commsize - 1, req, MPI_STATUS_IGNORE);
+
     }
   } else {
-    MPI_Send(&sendbuf, buffSize, MPI_CHAR, root, 0, MPI_COMM_WORLD);
+    MPI_Isend(&sendbuf, buffSize, MPI_CHAR, root, 0, MPI_COMM_WORLD, req1);
   }
+  MPI_Waitall(commsize - 1, req, MPI_STATUS_IGNORE);
+  MPI_Waitall(1, &req1, MPI_STATUS_IGNORE);
+
 //  MPI_Gather(sendbuf, buffSize, MPI_CHAR, recvbuf, buffSize, MPI_CHAR, root, MPI_COMM_WORLD);
   time = MPI_Wtime() - time;
   int flag = 0;
