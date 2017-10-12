@@ -18,7 +18,7 @@ int main(int argc,char **argv)
   MPI_Comm_size(MPI_COMM_WORLD, &commsize);
   MPI_Get_processor_name(procname, &len);
 
-  MPI_Request *req = malloc(sizeof(MPI_Request) * 2 * (commsize - 2));
+  MPI_Request *req = malloc(sizeof(MPI_Request) * (commsize - 1));
   MPI_Request req1;
 
   int i = 0;
