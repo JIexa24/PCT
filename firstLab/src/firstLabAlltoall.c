@@ -41,6 +41,7 @@ int main(int argc,char **argv)
        flag = 1;
      }
   }
+
   printf("Process %d of %d on %s(%d) received message (%ld) with time \t= %.6lf\n", rank, commsize, procname, flag, buffSize, time);
 
   //MPI_Send(&sendbuf, buffSize, MPI_CHAR, next, 0, MPI_COMM_WORLD);
