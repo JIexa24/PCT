@@ -34,11 +34,12 @@ int main(int argc,char **argv)
     for (i = 0; i < commsize; i++) {
       if (i == root) continue;
       MPI_Isend(&sendbuf, buffSize, MPI_CHAR, i, 0, MPI_COMM_WORLD, &(req[i]));
+      MPI_Waitall(commsize - 1, req, MPI_STATUS_IGNORE);
     }
   } else {
-    MPI_Irecv(&recvbuf, buffSize, MPI_CHAR, root, 0, MPI_COMM_WORLD, &(req[root]));
+    MPI_Irecv(&recvbuf, buffSize, MPI_CHAR, root, 0, MPI_COMM_WORLD, &req1);
+    MPI_Wait(&req1, MPI_STATUS_IGNORE);
   }
-  MPI_Waitall(commsize, req, MPI_STATUS_IGNORE);
   //MPI_Bcast(sendrecvbuf, buffSize, MPI_CHAR, root, MPI_COMM_WORLD);
   time = MPI_Wtime() - time;
   int flag = 0;
