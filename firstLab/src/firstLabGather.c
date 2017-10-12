@@ -35,7 +35,7 @@ int main(int argc,char **argv)
       MPI_Irecv(&(recvbuf[(i > root ? i - 1 : i) * buffSize]), buffSize, MPI_CHAR, i, 0, MPI_COMM_WORLD, &(req[i]));
     }
   } else {
-    MPI_Isend(sendbuf, buffSize, MPI_CHAR, root, 0, MPI_COMM_WORLD, &(req[root]));
+    MPI_Isend(&sendbuf, buffSize, MPI_CHAR, root, 0, MPI_COMM_WORLD, &(req[root]));
   }
   MPI_Waitall(commsize, req, MPI_STATUS_IGNORE);
 
