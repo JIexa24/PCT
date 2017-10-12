@@ -36,8 +36,8 @@ int main(int argc,char **argv)
     for (i = 0; i < commsize; i++) {
       if (i == rank) continue;
       MPI_Isend(sendbuf, buffSize, MPI_CHAR, i, 0, MPI_COMM_WORLD, &(req[(i > rank ? i - 1 : i)]));
-      MPI_Waitall(commsize - 1, req, MPI_STATUS_IGNORE);
     }
+    MPI_Waitall(commsize - 1, req, MPI_STATUS_IGNORE);
   } else {
     MPI_Irecv(recvbuf, buffSize, MPI_CHAR, root, 0, MPI_COMM_WORLD, &req1);
     MPI_Wait(&req1, MPI_STATUS_IGNORE);

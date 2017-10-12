@@ -18,7 +18,7 @@ int main(int argc,char **argv)
   MPI_Get_processor_name(procname, &len);
   if (rank == root) recvbuf = malloc(sizeof(char) * buffSize * (commsize - 1));
   else sendbuf = malloc(sizeof(char) * buffSize);
-  MPI_Request req[commsize - 1];
+  MPI_Request *req = malloc(sizeof(MPI_Request) * (commsize - 1));
   MPI_Request req1;
   int i = 0;
   if (rank > 0) {
@@ -31,9 +31,9 @@ int main(int argc,char **argv)
   double time = MPI_Wtime();
   if (rank == root) {
     for (i = 0; i < commsize; i++) {
-      if (i == root) continue;
+      if (i == rank) continue;
 //      MPI_Recv(&(recvbuf[(i > root ? i - 1 : i) * buffSize]), buffSize, MPI_CHAR, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-      MPI_Irecv(&(recvbuf[(i > root ? i - 1 : i) * buffSize]), buffSize, MPI_CHAR, i, 0, MPI_COMM_WORLD, &(req[(i > root ? i - 1 : i)]));
+      MPI_Irecv(&(recvbuf[(i > root ? i - 1 : i) * buffSize]), buffSize, MPI_CHAR, i, 0, MPI_COMM_WORLD, &(req[(i > rank ? i - 1 : i)]));
     }
     MPI_Waitall(commsize - 1, req, MPI_STATUS_IGNORE);
   } else {
