@@ -17,8 +17,7 @@ int main(int argc,char **argv)
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &commsize);
   MPI_Get_processor_name(procname, &len);
-  MPI_Request req[commsize - 1];
-  MPI_Request req1;
+  MPI_Request req[commsize];
 
   int i = 0;
   if (rank == root) sendbuf = malloc(sizeof(char) * buffSize);
@@ -34,13 +33,12 @@ int main(int argc,char **argv)
   if (rank == root) {
     for (i = 0; i < commsize; i++) {
       if (i == root) continue;
-      MPI_Isend(&sendbuf, buffSize, MPI_CHAR, i, 0, MPI_COMM_WORLD, &(req[(i > root ? i - 1 : i)]));
+      MPI_Isend(&sendbuf, buffSize, MPI_CHAR, i, 0, MPI_COMM_WORLD, &(req[i]));
     }
-    MPI_Waitall(commsize - 1, req, MPI_STATUS_IGNORE);
   } else {
-    MPI_Irecv(&recvbuf, buffSize, MPI_CHAR, root, 0, MPI_COMM_WORLD, &req1);
-    MPI_Waitall(1, &req1, MPI_STATUS_IGNORE);
+    MPI_Irecv(&recvbuf, buffSize, MPI_CHAR, root, 0, MPI_COMM_WORLD, &(req[root]));
   }
+  MPI_Waitall(commsize, req, MPI_STATUS_IGNORE);
   //MPI_Bcast(sendrecvbuf, buffSize, MPI_CHAR, root, MPI_COMM_WORLD);
   time = MPI_Wtime() - time;
   int flag = 0;
@@ -52,6 +50,8 @@ int main(int argc,char **argv)
   }
   if (rank > 0) {
     printf("Process %d of %d on %s(%d) received message (%ld) with time \t= %.6lf\n",rank,commsize,procname, flag,buffSize, time);
+  } else {
+    printf("Process %d of %d on %s(%d) send messages (%ld) with time \t= %.6lf\n",rank,commsize,procname, flag,buffSize, time);
   }
   free(sendbuf);
   free(recvbuf);
