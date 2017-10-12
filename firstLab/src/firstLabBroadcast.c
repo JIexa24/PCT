@@ -17,7 +17,7 @@ int main(int argc,char **argv)
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &commsize);
   MPI_Get_processor_name(procname, &len);
-  MPI_Request req[commsize - 1];
+  MPI_Request req[commsize - 2];
   MPI_Request req1;
 
   int i = 0;
@@ -34,7 +34,7 @@ int main(int argc,char **argv)
   if (rank == root) {
     for (i = 0; i < commsize; i++) {
       if (i == root) continue;
-      MPI_Isend(&sendbuf, buffSize, MPI_CHAR, i, 0, MPI_COMM_WORLD, &(req[i]));
+      MPI_Isend(&sendbuf, buffSize, MPI_CHAR, i, 0, MPI_COMM_WORLD, &(req[(i > rank ? i - 1 : i)]));
       MPI_Waitall(commsize - 1, req, MPI_STATUS_IGNORE);
     }
   } else {
