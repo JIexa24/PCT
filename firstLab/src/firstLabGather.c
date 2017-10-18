@@ -59,7 +59,7 @@ int main(int argc,char **argv)
 //  MPI_Recv(&recvbuf, buffSize, MPI_CHAR, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
   if (rank == root) free(recvbuf);
   else free(sendbuf);
-
+  free(req);
   MPI_Finalize();
   return 0;
 }

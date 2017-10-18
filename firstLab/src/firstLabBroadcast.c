@@ -39,8 +39,8 @@ int main(int argc,char **argv)
     }
     MPI_Waitall(commsize - 1, req, MPI_STATUS_IGNORE);
   } else {
-    MPI_Irecv(recvbuf, buffSize, MPI_CHAR, root, 0, MPI_COMM_WORLD, &req1);
-    MPI_Wait(&req1, MPI_STATUS_IGNORE);
+    MPI_Recv(recvbuf, buffSize, MPI_CHAR, root, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    //MPI_Wait(&req1, MPI_STATUS_IGNORE);
   }
   //MPI_Bcast(sendrecvbuf, buffSize, MPI_CHAR, root, MPI_COMM_WORLD);
   time = MPI_Wtime() - time;
@@ -56,8 +56,11 @@ int main(int argc,char **argv)
   } else {
     printf("Process %d of %d on %s(%d) send messages (%ld) with time \t= %.6lf\n",rank,commsize,procname, flag,buffSize, time);
   }
+if (rank == root)
   free(sendbuf);
+else
   free(recvbuf);
+  free(req);
   //MPI_Send(&sendbuf, buffSize, MPI_CHAR, next, 0, MPI_COMM_WORLD);
   //MPI_Recv(&recvbuf, buffSize, MPI_CHAR, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE););
   MPI_Finalize();

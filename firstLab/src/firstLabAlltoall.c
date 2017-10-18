@@ -48,7 +48,7 @@ int main(int argc,char **argv)
   //MPI_Recv(&recvbuf, buffSize, MPI_CHAR, prev, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
   free(sendbuf);
   free(recvbuf);
-
+  free(req);
   MPI_Finalize();
 
   return 0;
