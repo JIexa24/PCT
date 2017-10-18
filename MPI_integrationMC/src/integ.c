@@ -1,8 +1,9 @@
+#define _POSIX_C_SOURCE 1
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <inttypes.h>
-#include <omp.h>
+#include <mpi.h>
 
 
 const double PI = 3.14159265358979323846;
@@ -22,7 +23,7 @@ int main(int argc, char **argv)
   int in = 0;
   double s = 0;
   int n = atoi(argv[1]);
-  printf("Numerical integration by Monte Carlo method: n = %d\n", n);
+ // printf("Numerical integration by Monte Carlo method: n = %d\n", n);
 
   int root = 0;
   int rank,commsize;
@@ -40,8 +41,10 @@ int main(int argc, char **argv)
   s = 0;
 
   if (rank == root) {
+    printf("Numerical Integration by Monte Carlo method : n = %d\n", n); 
     time = MPI_Wtime();
   }
+
   double s_loc = 0;
   int in_loc = 0;
 
@@ -62,8 +65,9 @@ int main(int argc, char **argv)
     time = MPI_Wtime() - time;
     double v = PI * in / n;
     double res = v * s / in;
-    printf("Result: %.12f, n %d\ntime = %.6lf\n", res, n, t);
+    printf("Result: %.12f, n %d\ntime = %.6lf\n", res, n, time);
   }
+
   MPI_Finalize();
   return 0;
 }

@@ -1,4 +1,4 @@
-#PBS -N integration
+#PBS -N MPI_integration
 #PBS -l nodes=2:ppn=8
 #PBS -j oe
 
