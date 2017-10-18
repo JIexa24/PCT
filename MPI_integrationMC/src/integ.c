@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 
   in = 0;
   s = 0;
-
+  int seed = rank;
   if (rank == root) {
     printf("Numerical Integration by Monte Carlo method : n = %d\n", n); 
     time = MPI_Wtime();
@@ -49,8 +49,8 @@ int main(int argc, char **argv)
   int in_loc = 0;
 
   for (int i = 0; i < n - commsize; i+=commsize) {
-    double x = getrand(&rank) * PI; /* x in [0, pi] */
-    double y = getrand(&rank);
+    double x = getrand(&seed) * PI; /* x in [0, pi] */
+    double y = getrand(&seed);
     /* y in [0, sin(x)] */
     if (y <= sin(x)) {
       in_loc++;
