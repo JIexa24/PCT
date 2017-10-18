@@ -33,11 +33,10 @@ int main(int argc,char **argv)
 
   for (i = rank; i < n; i += commsize)
     sumloc += func(a + h * (i++ + 0.5) * commsize);
-
-  sumloc = sumloc * h;
   MPI_Reduce(&sumloc, &sum, 1, MPI_DOUBLE, MPI_SUM, root, MPI_COMM_WORLD);
 
   if (rank == root) {
+    sum = sum * h;
     time = MPI_Wtime() - time;
     printf("Process %d of %d on %s. S = %lf with time \t= %.6lf\n",rank,commsize, procname,sum,time);
   }
