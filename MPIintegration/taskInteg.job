@@ -4,4 +4,4 @@
 
 cd $PBS_O_WORKDIR
 
-mpiexec ./bin/integ 0 4 1000000
+mpiexec ./bin/integ -4 4 1000000

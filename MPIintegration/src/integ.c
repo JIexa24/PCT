@@ -10,8 +10,8 @@ double func(double x)
 
 int main(int argc,char **argv)
 {
-  double a = atol(argv[1]);
-  double b = atol(argv[2]);
+  double a = atof(argv[1]);
+  double b = atof(argv[2]);
   int n = atoi(argv[3]);
   double h = (b - a) / n;
   double sum = 0.0;
@@ -31,14 +31,15 @@ int main(int argc,char **argv)
   if (rank == root)
     time = MPI_Wtime();
 
-  for (i = rank; i < n; i += commsize)
-    sumloc += func(a + h * (i++ + 0.5) * commsize);
+  for (i = rank; i < n - commsize; i += commsize)
+    sumloc += func(a + h * (i + 0.5));
+
   MPI_Reduce(&sumloc, &sum, 1, MPI_DOUBLE, MPI_SUM, root, MPI_COMM_WORLD);
 
   if (rank == root) {
     sum = sum * h;
     time = MPI_Wtime() - time;
-    printf("Process %d of %d on %s. S = %lf with time \t= %.6lf\n",rank,commsize, procname,sum,time);
+    printf("Process %d of %d on %s. S = %lf with time \t= %.6lf\n",rank,commsize, procname, sum * sum ,time);
   }
   MPI_Finalize();
   return 0;
