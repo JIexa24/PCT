@@ -34,13 +34,14 @@ int main(int argc,char **argv)
     time = MPI_Wtime();
 
   do {
-    sumloc = tsumloc;  
     for (i = rank; i < n - commsize; i += commsize)
       tsumloc += func(a + h * (i + 0.5));
 
+    sumloc = tsumloc;  
     h = h / 2;
+    
   } while (fabs(tsumloc - sumloc) > eps);  
-  
+ 
   MPI_Reduce(&sumloc, &sum, 1, MPI_DOUBLE, MPI_SUM, root, MPI_COMM_WORLD);
 
   if (rank == root) {
