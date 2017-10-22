@@ -16,6 +16,8 @@ int main(int argc,char **argv)
   double h = (b - a) / n;
   double sum = 0.0;
   double sumloc = 0.0;
+  double tsumloc = 0.0;
+  double eps = 0.01;
   int root = 0;
   int rank,commsize;
   int i = 0;
@@ -31,9 +33,14 @@ int main(int argc,char **argv)
   if (rank == root)
     time = MPI_Wtime();
 
-  for (i = rank; i < n - commsize; i += commsize)
-    sumloc += func(a + h * (i + 0.5));
+  do {
+    sumloc = tsumloc;  
+    for (i = rank; i < n - commsize; i += commsize)
+      tsumloc += func(a + h * (i + 0.5));
 
+    h = h / 2;
+  } while (fabs(tsumloc - sumloc) > eps);  
+  
   MPI_Reduce(&sumloc, &sum, 1, MPI_DOUBLE, MPI_SUM, root, MPI_COMM_WORLD);
 
   if (rank == root) {
