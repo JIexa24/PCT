@@ -43,9 +43,8 @@ int main(int argc,char **argv)
     
     for (i = rank; i < n - commsize; i += commsize)
       sumloc += func(a + h * (i + 0.5));
-  
         
-  } while (fabs(tsumloc * h - sumloc * h) > eps);  
+  } while (fabs((tsumloc - sumloc) * h) > eps);  
  
   MPI_Reduce(&sumloc, &sum, 1, MPI_DOUBLE, MPI_SUM, root, MPI_COMM_WORLD);
 
