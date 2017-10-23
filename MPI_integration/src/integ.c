@@ -14,7 +14,7 @@ int main(int argc,char **argv)
   assert(!(argc < 5));
   double a = atof(argv[1]);
   double b = atof(argv[2]);
-  long int n = atol(argv[3]);
+  long int n = atol(argv[3]) / 2;
   double h = (b - a) / n;
   double sum = 0.0;
   double sumloc = 0.0;
@@ -38,13 +38,14 @@ int main(int argc,char **argv)
   do {
     tsumloc = sumloc;
     sumloc = 0.0;
+    n = n * 2;
+    h = (b - a) / n;
+    
     for (i = rank; i < n - commsize; i += commsize)
       sumloc += func(a + h * (i + 0.5));
   
-    n = n * 2;
-    h = (b - a) / n;
         
-  } while (fabs(tsumloc - sumloc) > eps);  
+  } while (fabs(tsumloc * h - sumloc * h) > eps);  
  
   MPI_Reduce(&sumloc, &sum, 1, MPI_DOUBLE, MPI_SUM, root, MPI_COMM_WORLD);
 
