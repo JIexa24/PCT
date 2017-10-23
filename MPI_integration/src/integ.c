@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <assert.h>
 
 double func(double x)
 {
@@ -10,17 +11,18 @@ double func(double x)
 
 int main(int argc,char **argv)
 {
+  assert(!(argc < 5));
   double a = atof(argv[1]);
   double b = atof(argv[2]);
-  int n = atoi(argv[3]);
+  long int n = atol(argv[3]);
   double h = (b - a) / n;
   double sum = 0.0;
   double sumloc = 0.0;
   double tsumloc = 0.0;
-  double eps = 0.01;
+  double eps = atof(argv[4]);
   int root = 0;
   int rank,commsize;
-  int i = 0;
+  long int i = 0;
   int len;
   char procname[MPI_MAX_PROCESSOR_NAME];
   double time;
@@ -34,12 +36,14 @@ int main(int argc,char **argv)
     time = MPI_Wtime();
 
   do {
+    tsumloc = sumloc;
+    sumloc = 0.0;
     for (i = rank; i < n - commsize; i += commsize)
-      tsumloc += func(a + h * (i + 0.5));
-
-    sumloc = tsumloc;  
-    h = h / 2;
-    
+      sumloc += func(a + h * (i + 0.5));
+  
+    n = n * 2;
+    h = (b - a) / n;
+        
   } while (fabs(tsumloc - sumloc) > eps);  
  
   MPI_Reduce(&sumloc, &sum, 1, MPI_DOUBLE, MPI_SUM, root, MPI_COMM_WORLD);
@@ -47,7 +51,7 @@ int main(int argc,char **argv)
   if (rank == root) {
     sum = sum * h;
     time = MPI_Wtime() - time;
-    printf("Process %d of %d on %s. S = %lf with time \t= %.6lf\n",rank,commsize, procname, sum * sum ,time);
+    printf("Process %d of %d on %s. S = %lf with time \t= %.6lf (%d|%lf)\n",rank,commsize, procname, sum * sum ,time, n, h);
   }
   MPI_Finalize();
   return 0;
