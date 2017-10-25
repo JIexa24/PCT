@@ -21,6 +21,7 @@ int main(int argc,char **argv)
   double sum = 0.0;
   double sumloc = 0.0;
   double tsumloc = 0.0;
+  double tsumlocp = 0.0;
   double eps = atof(argv[4]);
   int root = 0;
   int rank,commsize;
@@ -38,7 +39,9 @@ int main(int argc,char **argv)
     time = MPI_Wtime();
 
   do {
-    tsumloc = sumloc;
+//    MPI_Allreduce(&sumloc, &tsumlocp, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD); 
+    tsumlocp = tsumloc;
+    tsumloc = 0.0;
     sumloc = 0.0;
     n = n * 2;
     hprev = h;
@@ -46,13 +49,14 @@ int main(int argc,char **argv)
     
     for (i = rank; i < n - commsize; i += commsize)
       sumloc += func(a + h * (i + 0.5));
-
-  } while (fabs(tsumloc * hprev - sumloc * h) > eps);  
+   
+    MPI_Allreduce(&sumloc, &tsumloc, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+  } while (fabs(tsumlocp * hprev - tsumloc * h) > eps);  
  
-  MPI_Reduce(&sumloc, &sum, 1, MPI_DOUBLE, MPI_SUM, root, MPI_COMM_WORLD);
-
+  //MPI_Reduce(&sumloc, &sum, 1, MPI_DOUBLE, MPI_SUM, root, MPI_COMM_WORLD);
+  
   if (rank == root) {
-    sum = sum * h;
+    sum = tsumloc * h;
     time = MPI_Wtime() - time;
     printf("Process %d of %d on %s. S = %lf with time \t= %.6lf (%d|%lf)\n",rank,commsize, procname, sum ,time, n, h);
   }
