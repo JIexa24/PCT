@@ -6,7 +6,8 @@
 
 double func(double x)
 {
-  return exp(-x * x);
+  return x / (pow(sin(2 * x), 3));
+//  return exp(-x * x);
 }
 
 int main(int argc,char **argv)
@@ -15,6 +16,7 @@ int main(int argc,char **argv)
   double a = atof(argv[1]);
   double b = atof(argv[2]);
   long int n = atol(argv[3]) / 2;
+  double hprev;
   double h = (b - a) / n;
   double sum = 0.0;
   double sumloc = 0.0;
@@ -39,19 +41,20 @@ int main(int argc,char **argv)
     tsumloc = sumloc;
     sumloc = 0.0;
     n = n * 2;
+    hprev = h;
     h = (b - a) / n;
     
     for (i = rank; i < n - commsize; i += commsize)
       sumloc += func(a + h * (i + 0.5));
-    sumloc *= h;
-  } while (fabs(tsumloc - sumloc) * h > eps);  
+
+  } while (fabs(tsumloc * hprev - sumloc * h) > eps);  
  
   MPI_Reduce(&sumloc, &sum, 1, MPI_DOUBLE, MPI_SUM, root, MPI_COMM_WORLD);
 
   if (rank == root) {
-  //  sum = sum * h;
+    sum = sum * h;
     time = MPI_Wtime() - time;
-    printf("Process %d of %d on %s. S = %lf with time \t= %.6lf (%d|%lf)\n",rank,commsize, procname, sum * sum ,time, n, h);
+    printf("Process %d of %d on %s. S = %lf with time \t= %.6lf (%d|%lf)\n",rank,commsize, procname, sum ,time, n, h);
   }
   MPI_Finalize();
   return 0;
