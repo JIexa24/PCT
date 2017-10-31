@@ -1,7 +1,8 @@
-#PBS -N MPI_integrationMC
-#PBS -l nodes=2:ppn=8
+#PBS -N MPI_integrationMCx8x8
+#PBS -l nodes=8:ppn=8
 #PBS -j oe
 
 cd $PBS_O_WORKDIR
 
 mpiexec ./bin/integ 10000000
+mpiexec ./bin/integ 100000000
