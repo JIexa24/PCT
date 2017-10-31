@@ -4,6 +4,8 @@
 #include <math.h>
 #include <assert.h>
 
+#define STEP exp(1)
+
 double func(double x)
 {
   return x / (pow(sin(2 * x), 3));
@@ -15,7 +17,7 @@ int main(int argc,char **argv)
   assert(!(argc < 5));
   double a = atof(argv[1]);
   double b = atof(argv[2]);
-  long int n = atol(argv[3]) / 2;
+  long int n = atol(argv[3]) / STEP;
   double hprev;
   double h = (b - a) / n;
   double sum = 0.0;
@@ -43,7 +45,7 @@ int main(int argc,char **argv)
     tsumlocp = tsumloc;
     tsumloc = 0.0;
     sumloc = 0.0;
-    n = n * 2;
+    n = n * STEP;
     hprev = h;
     h = (b - a) / n;
     
