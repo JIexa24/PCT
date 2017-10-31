@@ -15,7 +15,8 @@ double getrand(unsigned int *seed)
 
 double func(double x, double y)
 {
-  return 3 * pow(y, 2) * pow(sin(x), 2);
+  return pow(exp(x + y), 2);
+//  return 3 * pow(y, 2) * pow(sin(x), 2);
 }
 
 int main(int argc, char **argv)
@@ -52,7 +53,7 @@ int main(int argc, char **argv)
     double x = getrand(&seed) * PI; /* x in [0, pi] */
     double y = getrand(&seed);
     /* y in [0, sin(x)] */
-    if (y <= sin(x)) {
+    if (y <= 1 - x) {
       in_loc++;
       s_loc += func(x, y);
     }
