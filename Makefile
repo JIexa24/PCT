@@ -19,10 +19,15 @@ COUNTER:
 NBODY:
 	make -C Nbody
 
-MPI: FIRSTLAB
+MPI: FIRSTLAB MPI_INTEG
 
 FIRSTLAB:
 	make -C firstLab
+
+MPI_INTEG:
+	make -C MPI_integration
+	make -C MPI_integration
+
 
 clean:
 	rm ./DGEMV/obj/*.o

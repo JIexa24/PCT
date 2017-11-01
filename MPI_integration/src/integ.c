@@ -17,7 +17,7 @@ int main(int argc,char **argv)
   assert(!(argc < 5));
   double a = atof(argv[1]);
   double b = atof(argv[2]);
-  long int n = atol(argv[3]) / STEP;
+  double n = atol(argv[3]) / STEP;
   double hprev;
   double h = (b - a) / n;
   double sum = 0.0;
@@ -60,7 +60,7 @@ int main(int argc,char **argv)
   if (rank == root) {
     sum = tsumloc * h;
     time = MPI_Wtime() - time;
-    printf("Process %d of %d on %s. S = %lf with time \t= %.6lf (%d|%lf)\n",rank,commsize, procname, sum ,time, n, h);
+    printf("Process %d of %d on %s. S = %lf with time \t= %.6lf (%lf|%lf)\n",rank,commsize, procname, sum ,time, n, h);
   }
   MPI_Finalize();
   return 0;
