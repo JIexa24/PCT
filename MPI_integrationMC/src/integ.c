@@ -49,7 +49,7 @@ int main(int argc, char **argv)
   double s_loc = 0;
   int in_loc = 0;
 
-  for (int i = 0; i < n - commsize; i+=commsize) {
+  for (int i = rank; i < n - commsize; i+=commsize) {
     double x = getrand(&seed); /* x in [0, 1] */
     double y = getrand(&seed);
     /* y in [0, 1 - x)] */
