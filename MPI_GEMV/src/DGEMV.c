@@ -32,7 +32,7 @@ void get_chunk(int a, int b, int commsize, int rank, int *lb, int *ub)
 }
 
 /* dgemv: Compute matrix-vector product c[m] = a[m][n] * b[n] */
-void dgemv(double *a, double *b, double *c, int m, int n)
+void dgemv(float *a, float *b, float *c, int m, int n)
 {
   int commsize, rank;
   MPI_Comm_size(MPI_COMM_WORLD, &commsize);
@@ -59,9 +59,9 @@ void dgemv(double *a, double *b, double *c, int m, int n)
       displs[i] = (i > 0) ? displs[i - 1] + rcounts[i - 1]: 0;
     }
 
-  MPI_Gatherv(MPI_IN_PLACE, ub - lb + 1, MPI_DOUBLE, c, rcounts, displs, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+  MPI_Gatherv(MPI_IN_PLACE, ub - lb + 1, MPI_FLOAT, c, rcounts, displs, MPI_FLOAT, 0, MPI_COMM_WORLD);
   } else {
-    MPI_Gatherv(&c[lb], ub - lb + 1, MPI_DOUBLE, NULL, NULL, NULL, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Gatherv(&c[lb], ub - lb + 1, MPI_FLOAT, NULL, NULL, NULL, MPI_FLOAT, 0, MPI_COMM_WORLD);
   }
 }
 
@@ -79,18 +79,18 @@ int main(int argc, char **argv)
   int lb, ub;
   get_chunk(0, m - 1, commsize, rank, &lb, &ub); // Декомпозиция матрицы на горизонтальные полосы
   int nrows = ub - lb + 1;
-  double *a = (double*)malloc(sizeof(*a) * nrows * n);
-  double *b = (double*)malloc(sizeof(*b) * n);
-  double *c = (double*)malloc(sizeof(*c) * m);
+  float *a = (float*)malloc(sizeof(*a) * nrows * n);
+  float *b = (float*)malloc(sizeof(*b) * n);
+  float *c = (float*)malloc(sizeof(*c) * m);
 
   // Each process initialize their arrays
   for (int i = 0; i < nrows; i++) {
     for (int j = 0; j < n; j++)
-      a[i * n + j] = lb + i + 1;
+      a[i * n + j] = 10;//lb + i + 1;
   }
 
   for (int j = 0; j < n; j++)
-    b[j] = j + 1;
+    b[j] = 2;//j + 1;
 
   dgemv(a, b, c, m, n);
 
@@ -100,15 +100,15 @@ int main(int argc, char **argv)
   if (rank == 0) {
     // Validation
     for (int i = 0; i < m; i++) {
-
-      double r = (i + 1) * (n / 2.0 + pow(n, 2) / 2.0);
+      float r = 20 * n;
+      //double r = (i + 1) * (n / 2.0 + pow(n, 2) / 2.0);
       if (fabs(c[i] - r) > 1E-6) {
         fprintf(stderr, "Validation failed: elem %d = %f (real value %f)\n", i, c[i], r);
         break; 
       }
     }
     printf("DGEMV: matrix-vector product (c[m] = a[m, n] * b[n]; m = %d, n = %d)\n", m, n);
-    printf("Memory used: %" PRIu64 " MiB\n", (uint64_t)(((double)m * n + m + n) * sizeof(double)) >> 20);
+    printf("Memory used: %" PRIu64 " MiB\n", (uint64_t)(((double)m * n + m + n) * sizeof(float)) >> 20);
     double gflop = 2.0 * m * n * 1E-9;
     printf("Elapsed time (%d procs): %.6f sec.\n", commsize, t);
     printf("Performance: %.2f GFLOPS\n", gflop / t);
