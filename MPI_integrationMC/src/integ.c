@@ -51,6 +51,7 @@ int main(int argc, char **argv)
 
   for (int i = rank; i < n - commsize; i+=commsize) {
     double x = getrand(&seed); /* x in [0, 1] */
+    if (x == 0 | x == 1) continue;
     double y = getrand(&seed);
     /* y in (0, 1 - x)] */
     if (y < 1 - x & y > 0) {
