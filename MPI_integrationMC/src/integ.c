@@ -50,10 +50,10 @@ int main(int argc, char **argv)
   int in_loc = 0;
 
   for (int i = rank; i < n - commsize; i+=commsize) {
-    double x = getrand(&seed); /* x in [0, 1] */
+    double x = getrand(&seed); 
     double y = getrand(&seed);
-    /* y in [0, 1 - x)] */
-    if (y <= 1 - x) {
+
+    if (y < 1 - x) {
       in_loc++;
       s_loc += func(x, y);
     }
