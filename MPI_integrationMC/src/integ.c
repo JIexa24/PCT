@@ -50,7 +50,7 @@ int main(int argc, char **argv)
   int in_loc = 0;
 
   for (int i = 0; i < n - commsize; i+=commsize) {
-    double x = getrand(&seed) * PI; /* x in [0, 1] */
+    double x = getrand(&seed); /* x in [0, 1] */
     double y = getrand(&seed);
     /* y in [0, 1 - x)] */
     if (y <= 1 - x) {
