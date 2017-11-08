@@ -4,7 +4,7 @@
 #include <math.h>
 #include <assert.h>
 
-#define STEP exp(1)
+#define STEP 2
 
 double func(double x)
 {
