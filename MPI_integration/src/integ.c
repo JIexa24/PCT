@@ -51,7 +51,7 @@ int main(int argc,char **argv)
     hprev = h;
     h = (b - a) / n;
     
-    for (i = rank; i < n - commsize; i += commsize)
+    for (i = rank; i < n; i += commsize)
       sumloc += func(a + h * (i + 0.5));
    
     MPI_Allreduce(&sumloc, &tsumloc, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
