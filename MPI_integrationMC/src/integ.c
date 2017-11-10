@@ -64,7 +64,7 @@ int main(int argc, char **argv)
   
   if (rank == root) {   
     time = MPI_Wtime() - time;
-    double v = in / n;
+    double v = PI * in / n;
     double res = v * s / in;
     printf("Result: %.12f, n %d\ntime = %.6lf\n", res, n, time);
   }
