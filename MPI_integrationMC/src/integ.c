@@ -53,7 +53,7 @@ int main(int argc, char **argv)
     double x = getrand(&seed); 
     double y = getrand(&seed);
 
-    if (x > 0 && x < 1 && y < 1 - x) {
+    if (x > 0 && x < 1 && y > 0 && y < 1 - x) {
       in_loc++;
       s_loc += func(x, y);
     }
