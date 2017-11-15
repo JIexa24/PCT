@@ -39,14 +39,14 @@ int main(int argc, char **argv)
   MPI_Get_processor_name(procname, &len); 
 
   in = 0;
-  s = 0;
+  s = 0.0;
   int seed = rank;
   if (rank == root) {
     printf("Numerical Integration by Monte Carlo method : n = %d\n", n); 
     time = MPI_Wtime();
   }
 
-  double s_loc = 0;
+  double s_loc = 0.0;
   int in_loc = 0;
 
   for (int i = rank; i < n; i+=commsize) {
@@ -64,7 +64,7 @@ int main(int argc, char **argv)
   
   if (rank == root) {   
     time = MPI_Wtime() - time;
-    double v = PI * in / n;
+    double v = in / n;
     double res = v * s / in;
     printf("Result: %.12f, n %d\ntime = %.6lf\n", res, n, time);
   }
