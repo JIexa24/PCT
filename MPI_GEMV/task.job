@@ -1,7 +1,8 @@
-#PBS -N MPI_GEMV
-#PBS -l nodes=4:ppn=8
+#PBS -N MPI_GEMV_st
+#PBS -l nodes=2:ppn=1
 #PBS -j oe
 
 cd $PBS_O_WORKDIR
 
+mpiexec ./bin/DGEMV 28000
 mpiexec ./bin/DGEMV 50000
