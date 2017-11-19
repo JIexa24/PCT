@@ -23,7 +23,7 @@ int main(int argc, char **argv)
 {
   int in = 0;
   double s = 0;
-  int n = atoi(argv[1]);
+  int n = argc > 1 ? atoi(argv[1]) : 100000;
  // printf("Numerical integration by Monte Carlo method: n = %d\n", n);
 
   int root = 0;
@@ -49,9 +49,9 @@ int main(int argc, char **argv)
   double s_loc = 0.0;
   int in_loc = 0;
 
-  for (int i = rank; i < n; i+=commsize) {
+  for ( i = rank; i < n; i+=commsize) {
     double x = getrand(&seed); 
-    double y = getrand(&seed);
+    double y = getrand(&seed) * (1 - x);
 
     if (x > 0 && x < 1 && y > 0 && y < 1 - x) {
       in_loc++;
@@ -60,11 +60,11 @@ int main(int argc, char **argv)
   }
 
   MPI_Reduce(&s_loc, &s, 1, MPI_DOUBLE, MPI_SUM, root, MPI_COMM_WORLD);
-  MPI_Reduce(&in_loc, &in, 1, MPI_DOUBLE, MPI_SUM, root, MPI_COMM_WORLD);
+  MPI_Reduce(&in_loc, &in, 1, MPI_INT, MPI_SUM, root, MPI_COMM_WORLD);
   
   if (rank == root) {   
     time = MPI_Wtime() - time;
-    double v = in / n;
+    double v = /*PI */ in / n;
     double res = v * s / in;
     printf("Result: %.12f, n %d\ntime = %.6lf\n", res, n, time);
   }
