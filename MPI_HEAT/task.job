@@ -1,8 +1,8 @@
-#PBS -N MPI_HEAT
-#PBS -l nodes=2:ppn=8
+#PBS -N MPI_HEATx1x1
+#PBS -l nodes=1:ppn=1
 #PBS -j oe
 
 cd $PBS_O_WORKDIR
 
-mpiexec ./bin/MPI_HEAT_1D 1000
-mpiexec ./bin/MPI_HEAT_2D 1000
+mpiexec ./bin/MPI_HEAT_1D 10000
+mpiexec ./bin/MPI_HEAT_2D 10000

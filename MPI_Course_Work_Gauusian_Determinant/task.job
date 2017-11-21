@@ -1,18 +1,11 @@
-#PBS -N MPI_Course_Work_x8x8
+#PBS -N MPI_Course_Work_x8x8x15000
 #PBS -l nodes=8:ppn=8
 #PBS -j oe
 #PBS -q release
 
 cd $PBS_O_WORKDIR
 
-mpiexec ./bin/main 1000
-mpiexec ./bin/main 2000
-mpiexec ./bin/main 5000
-mpiexec ./bin/main 10000
-mpiexec ./bin/main 20000
-mpiexec ./bin/main 30000
-mpiexec ./bin/main 40000
-
+mpiexec ./bin/main 15000
 
 
 
