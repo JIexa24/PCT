@@ -1,5 +1,5 @@
-#PBS -N MPI_GEMV_st
-#PBS -l nodes=2:ppn=1
+#PBS -N MPI_GEMV_x2x4
+#PBS -l nodes=2:ppn=4
 #PBS -j oe
 
 cd $PBS_O_WORKDIR

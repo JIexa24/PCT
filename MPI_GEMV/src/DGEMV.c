@@ -82,7 +82,7 @@ int main(int argc, char **argv)
   float *a = (float*)malloc(sizeof(*a) * nrows * n);
   float *b = (float*)malloc(sizeof(*b) * n);
   float *c = (float*)malloc(sizeof(*c) * m);
-
+  if (c == NULL || b == NULL || a == NULL) return 1;
   // Each process initialize their arrays
   for (int i = 0; i < nrows; i++) {
     for (int j = 0; j < n; j++)
