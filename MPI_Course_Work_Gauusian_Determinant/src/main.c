@@ -81,8 +81,8 @@ int main(int argc, char *argv[])
     }
   }
 
- 
-  if(rank == root) { 
+  // Вычисляем определитель
+  if (rank == root) { 
     double locdet = 1;
     int row, j;
     for (j = rank, row = 0; row < nrows; j+=commsize, ++row) {
@@ -95,16 +95,15 @@ int main(int argc, char *argv[])
       determinant = determinant * locdet;
     }
 
-  }else{
+  } else {
     double locdet = 1;
     int row, j;
     for (j = rank, row = 0; row < nrows; j+=commsize, ++row) {
-        locdet = locdet * a[row*(n+1) + j];
-
+      locdet = locdet * a[row*(n+1) + j];
     }
-
     MPI_Send(&locdet, 1,  MPI_DOUBLE, root,0, MPI_COMM_WORLD);
   }
+
   t = MPI_Wtime() - t;
 
   free(tmp);
@@ -112,13 +111,11 @@ int main(int argc, char *argv[])
   free(a);
 
 
-if (rank == root) {
-printf("Gaussian Determimant(MPI) = %lf: n %d, procs %d, time (sec) %.6f\n",
-determinant , n, commsize, t);
-}
+  if (rank == root) {
+    printf("Gaussian Determimant(MPI) : n %d, procs %d, time (sec) %.6f\n",
+    n, commsize, t);
+  }
 
-
-
-MPI_Finalize();
-return 0;
+  MPI_Finalize();
+  return 0;
 }
