@@ -3,8 +3,8 @@
 int main()
 {
   long n = 10000;
-  long p = 1;
-  double limitmemorynode = (1 << 30);
+  long p = 8;
+  double limitmemorynode = 7.0 * (1 << 30) / p;//7765180kB memFree (cat /proc/meminfo on cn1)
   double a1;
   while (1)
   {
@@ -13,6 +13,6 @@ int main()
     if (a1 < limitmemorynode && a2 > limitmemorynode) break;
     n+=5;
   }
-  printf("%ld %ld %lf\n", n, p, limitmemorynode);
+  printf("%ld %ld %lf\n", n, p, limitmemorynode / 1024);
   return 0;
 }
