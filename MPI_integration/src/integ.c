@@ -55,7 +55,7 @@ int main(int argc,char **argv)
       sumloc += func(a + h * (i + 0.5));
    
     MPI_Allreduce(&sumloc, &tsumloc, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
-  } while (fabs(tsumlocp * hprev - tsumloc * h) > eps);  
+  } while (fabs(tsumlocp * hprev - tsumloc * h) / 3  >= eps);  
  
   //MPI_Reduce(&sumloc, &sum, 1, MPI_DOUBLE, MPI_SUM, root, MPI_COMM_WORLD);
   
