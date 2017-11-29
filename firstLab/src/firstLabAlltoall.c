@@ -35,12 +35,12 @@ int main(int argc,char **argv)
   for (k = 0; k < commsize; k += blocksize){
     for (i = 0; i < locsize; i++)
     {   
-       MPI_Isend(sendbuf, buffSize, MPI_CHAR, i + k, 0, MPI_COMM_WORLD, &(reqs[i]));
+       MPI_Isend(sendbuf, buffSize, MPI_CHAR, (rank + i + k) % commsize, 0, MPI_COMM_WORLD, &(reqs[i]));
     }
 
     for (i = 0; i < locsize; i++)
     {    
-      MPI_Irecv(&(recvbuf[(i+k) * buffSize]), buffSize, MPI_CHAR, i + k, 0, MPI_COMM_WORLD, &(reqs[locsize + i]));
+      MPI_Irecv(&(recvbuf[((rank + i + k) % commsize) * buffSize]), buffSize, MPI_CHAR, (rank + i + k) % commsize, 0, MPI_COMM_WORLD, &(reqs[locsize + i]));
     }
     MPI_Waitall(locsize * 2, reqs, MPI_STATUS_IGNORE);
     t -= blocksize;
