@@ -1,13 +1,9 @@
-#PBS -N MPI_Course_Work_x7x8x32765
-#PBS -l nodes=7:ppn=8
+
+#PBS -N MPI_Course_Work_x13x8x30650
+#PBS -l nodes=13:ppn=8
 #PBS -j oe
 #PBS -q release
 
 cd $PBS_O_WORKDIR
 
-mpiexec ./bin/main 32765
-
-
-
-
-
+mpiexec ./bin/main 30650
