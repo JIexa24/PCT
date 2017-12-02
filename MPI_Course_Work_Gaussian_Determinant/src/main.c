@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <math.h>
 
-
 int get_chunk(int total, int commsize, int rank)
 {
   int n = total;
@@ -25,33 +24,31 @@ int main(int argc, char *argv[])
   int rank, commsize;
   int root = argc > 2 ? atoi(argv[2]) : 0;
   MPI_Init(&argc, &argv);
- 
+
   double t = MPI_Wtime();
 
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &commsize);
 
   int nrows = get_chunk(n, commsize, rank);
-  int *rows = malloc(sizeof(*rows) * nrows); // Номера локальных строк
+  int *rows = malloc(sizeof(*rows) * nrows); // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 
-  // Матрица дополнена столбцом для вектора b
+  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ b
   double determinant = 1;
-  double *a = malloc(sizeof(*a) * nrows * (n + 1));
-  double *tmp = malloc(sizeof(*tmp) * (n + 1));
+  double *a = malloc(sizeof(*a) * nrows * (n));
+  double *tmp = malloc(sizeof(*tmp) * (n));
 
-  // Инициализация как в последовательной версии
+  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
   for (int i = 0; i < nrows; i++) {
     rows[i] = rank + commsize * i;
-    srand(rows[i] * (n + 1));
+    srand(rows[i] * n);
     for (int j = 0; j < n; j++)
-      a[i * (n + 1) + j] = rand() % 2 + 1;
-    // b[i]
-    a[i * (n + 1) + n] = rand() % 2 + 1;
+      a[i * (n) + j] = rand() % 2 + 1;
 }
 
 #if 0
   MPI_Recv(NULL, 0, MPI_INT, (rank > 0) ? rank - 1 : MPI_PROC_NULL, 0, MPI_COMM_WORLD,
-  MPI_STATUS_IGNORE); // Вывод в порядке: proc 0, 1, 2, … P-1.
+  MPI_STATUS_IGNORE); // пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ: proc 0, 1, 2, пїЅ P-1.
   printf("Proc %d: ", rank);
   for (int i = 0; i < nrows; i++)
   printf("%d ", rows[i]);
@@ -60,29 +57,29 @@ int main(int argc, char *argv[])
   MPI_COMM_WORLD);
 #endif
 
-// Прямой ход
+// пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ
   int row = 0;
   for (int i = 0; i < n - 1; i++) {
-  // Исключаем x_i
+  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ x_i
     if (i == rows[row]) {
-    // Рассылаем строку i, находящуюся в памяти текущего процесса
-    MPI_Bcast(&a[row * (n + 1)], n + 1, MPI_DOUBLE, rank, MPI_COMM_WORLD);
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ i, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    MPI_Bcast(&a[row * n], n, MPI_DOUBLE, rank, MPI_COMM_WORLD);
     for (int j = 0; j <= n; j++)
-      tmp[j] = a[row * (n + 1) + j];
+      tmp[j] = a[row * n + j];
     row++;
     } else {
-      MPI_Bcast(tmp, n + 1, MPI_DOUBLE, i % commsize, MPI_COMM_WORLD);
+      MPI_Bcast(tmp, n, MPI_DOUBLE, i % commsize, MPI_COMM_WORLD);
     }
-  // Вычитаем принятую строку из уравнений, хранящихся в текущем процессе
+  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     for (int j = row; j < nrows; j++) {
-      double scaling = a[j * (n + 1) + i] / tmp[i];
-      for (int k = i; k < n + 1; k++)
-        a[j * (n + 1) + k] -= scaling * tmp[k];
+      double scaling = a[j * n + i] / tmp[i];
+      for (int k = i; k < n; k++)
+        a[j * n + k] -= scaling * tmp[k];
     }
   }
 
-  // Вычисляем определитель
-  if (rank == root) { 
+  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+  if (rank == root) {
     double locdet = 1;
     int row, j;
     for (j = rank, row = 0; row < nrows; j+=commsize, ++row) {
@@ -99,9 +96,9 @@ int main(int argc, char *argv[])
     double locdet = 1;
     int row, j;
     for (j = rank, row = 0; row < nrows; j+=commsize, ++row) {
-      locdet = locdet * a[row*(n+1) + j];
+      locdet = locdet * a[row * n + j];
     }
-    MPI_Send(&locdet, 1,  MPI_DOUBLE, root,0, MPI_COMM_WORLD);
+    MPI_Send(&locdet, 1,  MPI_DOUBLE, root, 0, MPI_COMM_WORLD);
   }
 
   t = MPI_Wtime() - t;
