@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
     double locdet = 1;
     int row, j;
     for (j = rank, row = 0; row < nrows; j+=commsize, ++row) {
-        determinant = determinant * a[row*(n+1) + j];
+        determinant = determinant * a[row * n + j];
     }
 
     for (int i = 0; i < commsize; i++){
