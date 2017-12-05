@@ -31,14 +31,13 @@ int main(int argc, char *argv[])
   MPI_Comm_size(MPI_COMM_WORLD, &commsize);
 
   int nrows = get_chunk(n, commsize, rank);
-  int *rows = malloc(sizeof(*rows) * nrows); // ������ ��������� �����
+  int *rows = malloc(sizeof(*rows) * nrows);
 
-  // ������� ��������� �������� ��� ������� b
+
   double determinant = 1;
   double *a = malloc(sizeof(*a) * nrows * (n));
   double *tmp = malloc(sizeof(*tmp) * (n));
 
-  // ������������� ��� � ���������������� ������
   for (int i = 0; i < nrows; i++) {
     rows[i] = rank + commsize * i;
     srand(rows[i] * n);
@@ -57,12 +56,9 @@ int main(int argc, char *argv[])
   MPI_COMM_WORLD);
 #endif
 
-// ������ ���
   int row = 0;
   for (int i = 0; i < n - 1; i++) {
-  // ��������� x_i
     if (i == rows[row]) {
-    // ��������� ������ i, ����������� � ������ �������� ��������
     MPI_Bcast(&a[row * n], n, MPI_DOUBLE, rank, MPI_COMM_WORLD);
     for (int j = 0; j <= n; j++)
       tmp[j] = a[row * n + j];
@@ -70,7 +66,6 @@ int main(int argc, char *argv[])
     } else {
       MPI_Bcast(tmp, n, MPI_DOUBLE, i % commsize, MPI_COMM_WORLD);
     }
-  // �������� �������� ������ �� ���������, ���������� � ������� ��������
     for (int j = row; j < nrows; j++) {
       double scaling = a[j * n + i] / tmp[i];
       for (int k = i; k < n; k++)
@@ -78,7 +73,6 @@ int main(int argc, char *argv[])
     }
   }
 
-  // ��������� ������������
   if (rank == root) {
     double locdet = 1;
     int row, j;
