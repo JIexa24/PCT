@@ -9,8 +9,8 @@ int main()
   double a1, a2;
   while (1)
   {
-    a1 = 8*(n*n+ 2 * n)/p ;
-    a2 = 8*((n+5)*(n+5)+ 2 * (n+5))/p ;
+    a1 = 8*(n*n/p+ 2 * n);
+    a2 = 8*((n+5)*(n+5)/p+ 2 * (n+5));
     if (a1 < limitmemorynode && a2 > limitmemorynode) break;
     n+=5;
   }
