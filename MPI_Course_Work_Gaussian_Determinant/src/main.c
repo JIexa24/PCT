@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
   double t = MPI_Wtime();
 #if 0
   MPI_Recv(NULL, 0, MPI_INT, (rank > 0) ? rank - 1 : MPI_PROC_NULL, 0, MPI_COMM_WORLD,
-  MPI_STATUS_IGNORE); // ����� � �������: proc 0, 1, 2, � P-1.
+  MPI_STATUS_IGNORE);
   printf("Proc %d: ", rank);
   for (int i = 0; i < nrows; i++)
   printf("%d ", rows[i]);
