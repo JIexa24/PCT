@@ -25,7 +25,6 @@ int main(int argc, char *argv[])
   int root = argc > 2 ? atoi(argv[2]) : 0;
   MPI_Init(&argc, &argv);
 
-  double t = MPI_Wtime();
 
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &commsize);
@@ -43,8 +42,9 @@ int main(int argc, char *argv[])
     srand(rows[i] * n);
     for (int j = 0; j < n; j++)
       a[i * (n) + j] = rand() % 2 + 1;
-}
+  }
 
+  double t = MPI_Wtime();
 #if 0
   MPI_Recv(NULL, 0, MPI_INT, (rank > 0) ? rank - 1 : MPI_PROC_NULL, 0, MPI_COMM_WORLD,
   MPI_STATUS_IGNORE); // ����� � �������: proc 0, 1, 2, � P-1.
