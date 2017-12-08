@@ -59,7 +59,7 @@ void dgemv(double *a, double *b, double *c, int m, int n)
 
   MPI_Gatherv(MPI_IN_PLACE, ub - lb + 1, MPI_DOUBLE, c, rcounts, displs, MPI_FLOAT, 0, MPI_COMM_WORLD);
   } else {
-    MPI_Gatherv(&c[lb], ub - lb + 1, MPI_DOUBLE, NULL, NULL, NULL, MPI_FLOAT, 0, MPI_COMM_WORLD);
+    MPI_Gatherv(&c[lb], ub - lb + 1, MPI_DOUBLE, NULL, NULL, NULL, MPI_DOUBLE, 0, MPI_COMM_WORLD);
   }
 }
 
