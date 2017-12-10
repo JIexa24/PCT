@@ -69,7 +69,6 @@ void iteration_brute()
         { 
 	  numsell[j + 1] += numsell[j] / alphabetSize;
           numsell[j] = numsell[j] % alphabetSize;
-//          printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
   	}
       }
       for (j = 0, k = lenght - 1; j < lenght, k >= 0; j++, k--) {
@@ -87,7 +86,7 @@ void iteration_brute()
       hash(word, &wordhash);
       if (!strcmp(word, keyword))
       {
-        printf("Word: %s\nWordHash: %s\n", word, wordhash);
+        printf("Word: %s\nWordHash: %s\nTime: %lf\n", word, wordhash, MPI_Wtime() - time);
         MPI_Abort(MPI_COMM_WORLD,0);
       }
       free(wordhash);
