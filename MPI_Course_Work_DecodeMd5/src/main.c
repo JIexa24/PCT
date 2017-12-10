@@ -52,7 +52,7 @@ void iteration_brute(int rank, int commsize)
   char* wordhash = NULL;
   char* word = (char*)malloc(lenght + 1 * sizeof(char));
   word[lenght] = 0;
-  int* numsell = (int*)malloc(lenght * sizeof(int));
+  int* numcell = (int*)malloc(lenght * sizeof(int));
   
   if (rank == root) {
     printf("Keyword: %s\nKeywordHash: %s\n\n", keyword, keywordhash);
@@ -63,21 +63,21 @@ void iteration_brute(int rank, int commsize)
   while (1) {
    // breakflag = 0;
     for (i = 0; i < lenght; i++) {
-    	  numsell[i] = 0;
+    	  numcell[i] = 0;
     }
-    numsell[0] = rank;
+    numcell[0] = rank;
     for (i = 0; ; i++) {
-      if (numsell[lenght - 1] >= alphabetSize)break;
+      if (numcell[lenght - 1] >= alphabetSize)break;
 
       for (j = 0; j < lenght - 1; j++) {
-        if (numsell[j] >= alphabetSize) 
+        if (numcell[j] >= alphabetSize) 
         { 
-	  numsell[j + 1] += numsell[j] / alphabetSize;
-          numsell[j] = numsell[j] % alphabetSize;
+	  numcell[j + 1] += numcell[j] / alphabetSize;
+          numcell[j] = numcell[j] % alphabetSize;
   	}
       }
       for (j = 0, k = lenght - 1; j < lenght, k >= 0; j++, k--) {
-    	word[k] = alphabet[numsell[j]];
+    	word[k] = alphabet[numcell[j]];
       }
 //    printf("Word: %s\n", word);
 #if 0
@@ -95,14 +95,14 @@ void iteration_brute(int rank, int commsize)
         MPI_Abort(MPI_COMM_WORLD,0);
       }
       free(wordhash);
-      numsell[0]+=commsize;    
+      numcell[0]+=commsize;    
       //usleep(25000);
       //printf("\nword %s\n", word);
     }
     lenght++;
     word = (char*)realloc(word, lenght + 1 * sizeof(char));
     word[lenght] = 0;
-    numsell = (int*)realloc(numsell, lenght * sizeof(int));
+    numcell = (int*)realloc(numcell, lenght * sizeof(int));
     //iterationCount = pow(alphabetSize, lenght);
   }
 
@@ -116,7 +116,7 @@ void iteration_brute(int rank, int commsize)
   MPI_COMM_WORLD);
 #endif  
   free(word);
-  free(numsell);
+  free(numcell);
   return;
 }
 
