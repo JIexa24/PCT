@@ -3,11 +3,15 @@ CFLAGS = -g3 -O0 -fopenmp -std=c99
 
 all: OPENMP MPI
 
-OPENMP: MATRIX INTEGR COUNTER NBODY
+OPENMP: MATRIX INTEGR COUNTER NBODY COURSE
  
 MATRIX:
 	make -C DGEMV
  
+COURSE:
+	make -C MPI_Course_Work_Gaussian_Determinant
+	make -C MPI_Course_Work_DecodeMd5
+	
 INTEGR:
 	make -C integration
 	make -C integrationMC
