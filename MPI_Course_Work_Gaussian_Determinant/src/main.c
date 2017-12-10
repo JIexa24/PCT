@@ -41,10 +41,11 @@ int main(int argc, char *argv[])
     rows[i] = rank + commsize * i;
     srand(rows[i] * n);
     for (int j = 0; j < n; j++)
-      a[i * (n) + j] = rand() % 2 + 1;
+      a[i * n + j] = rand() % 2 + 1;
   }
 
   double t = MPI_Wtime();
+
 #if 0
   MPI_Recv(NULL, 0, MPI_INT, (rank > 0) ? rank - 1 : MPI_PROC_NULL, 0, MPI_COMM_WORLD,
   MPI_STATUS_IGNORE);

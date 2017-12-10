@@ -31,8 +31,7 @@ void get_chunk(int a, int b, int commsize, int rank, int *lb, int *ub)
   *ub = *lb + chunk - 1;
 }
 
-/* dgemv: Compute matrix-vector product c[m] = a[m][n] * b[n] */
-void dgemv(float *a, float *b, float *c, int m, int n)
+void dgemv(double *a, double *b, double *c, int m, int n)
 {
   int commsize, rank;
   MPI_Comm_size(MPI_COMM_WORLD, &commsize);
@@ -48,7 +47,6 @@ void dgemv(float *a, float *b, float *c, int m, int n)
       c[lb + i] += a[i * n + j] * b[j];
   }
  
-// Gather data: each process contains sub-result in c[m] in rows [lb..ub]
   if (rank == 0) {
     int *displs = malloc(sizeof(*displs) * commsize);
     int *rcounts = malloc(sizeof(*rcounts) * commsize);
@@ -59,9 +57,9 @@ void dgemv(float *a, float *b, float *c, int m, int n)
       displs[i] = (i > 0) ? displs[i - 1] + rcounts[i - 1]: 0;
     }
 
-  MPI_Gatherv(MPI_IN_PLACE, ub - lb + 1, MPI_FLOAT, c, rcounts, displs, MPI_FLOAT, 0, MPI_COMM_WORLD);
+  MPI_Gatherv(MPI_IN_PLACE, ub - lb + 1, MPI_DOUBLE, c, rcounts, displs, MPI_FLOAT, 0, MPI_COMM_WORLD);
   } else {
-    MPI_Gatherv(&c[lb], ub - lb + 1, MPI_FLOAT, NULL, NULL, NULL, MPI_FLOAT, 0, MPI_COMM_WORLD);
+    MPI_Gatherv(&c[lb], ub - lb + 1, MPI_DOUBLE, NULL, NULL, NULL, MPI_DOUBLE, 0, MPI_COMM_WORLD);
   }
 }
 
@@ -79,9 +77,9 @@ int main(int argc, char **argv)
   int lb, ub;
   get_chunk(0, m - 1, commsize, rank, &lb, &ub); // Декомпозиция матрицы на горизонтальные полосы
   int nrows = ub - lb + 1;
-  float *a = (float*)malloc(sizeof(*a) * nrows * n);
-  float *b = (float*)malloc(sizeof(*b) * n);
-  float *c = (float*)malloc(sizeof(*c) * m);
+  double *a = (double*)malloc(sizeof(*a) * nrows * n);
+  double *b = (double*)malloc(sizeof(*b) * n);
+  double *c = (double*)malloc(sizeof(*c) * m);
   if (c == NULL || b == NULL || a == NULL) return 1;
   // Each process initialize their arrays
   for (int i = 0; i < nrows; i++) {
@@ -100,7 +98,7 @@ int main(int argc, char **argv)
   if (rank == 0) {
     // Validation
     for (int i = 0; i < m; i++) {
-      float r = 20 * n;
+      double r = 20 * n;
       //double r = (i + 1) * (n / 2.0 + pow(n, 2) / 2.0);
       if (fabs(c[i] - r) > 1E-6) {
         fprintf(stderr, "Validation failed: elem %d = %f (real value %f)\n", i, c[i], r);

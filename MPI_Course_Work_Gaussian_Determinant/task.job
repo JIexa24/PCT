@@ -1,6 +1,6 @@
 
-#PBS -N MPI_Course_Work_x13x8x30650
-#PBS -l nodes=13:ppn=8
+#PBS -N MPI_Course_Work_x1x2x30650
+#PBS -l nodes=1:ppn=2
 #PBS -j oe
 #PBS -q release
 
