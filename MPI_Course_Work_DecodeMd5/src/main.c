@@ -13,12 +13,18 @@ char* keyword = NULL;
 char* keywordhash = NULL;
 int root = 0;
 
-void iteration_brute();
+void iteration_brute(int rankb, int commsizeb);
 void hash(char *input, char **output);
 
 int main(int argc, char** argv) 
 {
+  int rankm, commsizem;
+
   MPI_Init(&argc, &argv);
+
+  MPI_Comm_rank(MPI_COMM_WORLD, &rankm);
+  MPI_Comm_size(MPI_COMM_WORLD, &commsizem);
+
   keyword = (char *)malloc(BUFFERSIZE * sizeof(char));
   if (argc > 1) {
     strcpy(keyword, argv[1]);
@@ -27,30 +33,29 @@ int main(int argc, char** argv)
   }
   hash(keyword,&keywordhash);
 
-  iteration_brute();
+  iteration_brute(rankm, commsizem);
 
+  free(keyword);
   free(keywordhash);
+
   MPI_Finalize();
   return 0;
 }
 
-void iteration_brute()
+void iteration_brute(int rankb, int commsizeb)
 {
   if (!strcmp(keyword, "")) return;
   int lenght = 1;
   //long iterationCount = pow(alphabetSize, lenght);
   long i = 0, j = 0, k = 0;
-  int rank;
-  int commsize;
+  int rank = rankb;
+  int commsize = commsizeb;
   //int breakflag = 0;
   char* wordhash = NULL;
   char* word = (char*)malloc(lenght + 1 * sizeof(char));
   word[lenght] = 0;
   int* numsell = (int*)malloc(lenght * sizeof(int));
   
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  MPI_Comm_size(MPI_COMM_WORLD, &commsize);
-
   if (rank == root) {
     printf("Keyword: %s\nKeywordHash: %s\n\n", keyword, keywordhash);
   }
