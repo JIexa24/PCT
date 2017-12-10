@@ -7,7 +7,7 @@
 
 #define BUFFERSIZE 256
 
-char alphabet[] = "012356789";//"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+char alphabet[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 int alphabetSize = sizeof(alphabet) - 1;
 char* keyword = NULL;
 char* keywordhash = NULL;
