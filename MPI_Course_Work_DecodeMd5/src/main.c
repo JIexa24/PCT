@@ -28,6 +28,8 @@ int main(int argc, char** argv)
   hash(keyword,&keywordhash);
 
   iteration_brute();
+
+  free(keywordhash);
   MPI_Finalize();
   return 0;
 }
