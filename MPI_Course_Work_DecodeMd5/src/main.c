@@ -13,7 +13,7 @@ char* keyword = NULL;
 char* keywordhash = NULL;
 int root = 0;
 
-void iteration_brute(int rankb, int commsizeb);
+void iteration_brute(int rank, int commsize);
 void hash(char *input, char **output);
 
 int main(int argc, char** argv) 
@@ -42,14 +42,12 @@ int main(int argc, char** argv)
   return 0;
 }
 
-void iteration_brute(int rankb, int commsizeb)
+void iteration_brute(int rank, int commsize)
 {
   if (!strcmp(keyword, "")) return;
   int lenght = 1;
   //long iterationCount = pow(alphabetSize, lenght);
   long i = 0, j = 0, k = 0;
-  int rank = rankb;
-  int commsize = commsizeb;
   //int breakflag = 0;
   char* wordhash = NULL;
   char* word = (char*)malloc(lenght + 1 * sizeof(char));
