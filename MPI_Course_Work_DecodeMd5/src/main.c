@@ -92,6 +92,11 @@ void iteration_brute(int rank, int commsize)
       if (!strcmp(word, keyword))
       {
         printf("Word: %s\nWordHash: %s\nTime: %lf\n", word, wordhash, MPI_Wtime() - time);
+	free(word);
+	free(wordhash);
+	free(keyword);
+	free(keywordhash);
+	free(numcell);
         MPI_Abort(MPI_COMM_WORLD,0);
       }
       free(wordhash);
