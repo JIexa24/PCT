@@ -47,7 +47,6 @@ void dgemv(double *a, double *b, double *c, int m, int n)
       c[lb + i] += a[i * n + j] * b[j];
   }
  
-  if (rank == 0) {
     int *displs = malloc(sizeof(*displs) * commsize);
     int *rcounts = malloc(sizeof(*rcounts) * commsize);
     for (int i = 0; i < commsize; i++) {
@@ -57,10 +56,7 @@ void dgemv(double *a, double *b, double *c, int m, int n)
       displs[i] = (i > 0) ? displs[i - 1] + rcounts[i - 1]: 0;
     }
 
-  MPI_Gatherv(MPI_IN_PLACE, ub - lb + 1, MPI_DOUBLE, c, rcounts, displs, MPI_FLOAT, 0, MPI_COMM_WORLD);
-  } else {
-    MPI_Gatherv(&c[lb], ub - lb + 1, MPI_DOUBLE, NULL, NULL, NULL, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-  }
+  MPI_Allgatherv(&c[lb], ub - lb + 1, MPI_DOUBLE, c, rcounts, MPI_DOUBLE,MPI_COMM_WORLD);
 }
 
 
