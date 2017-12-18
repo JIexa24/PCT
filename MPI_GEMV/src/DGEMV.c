@@ -56,7 +56,7 @@ void dgemv(double *a, double *b, double *c, int m, int n)
       displs[i] = (i > 0) ? displs[i - 1] + rcounts[i - 1]: 0;
     }
 
-  MPI_Allgatherv(MPI_IN_PLACE, ub - lb + 1, MPI_DOUBLE, c, rcounts, displs, MPI_DOUBLE,MPI_COMM_WORLD);
+  MPI_Allgatherv(MPI_IN_PLACE, 0, MPI_DOUBLE, c, rcounts, displs, MPI_DOUBLE,MPI_COMM_WORLD);
 }
 
 
