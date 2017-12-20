@@ -1,9 +1,10 @@
 
-#PBS -N MPI_Course_Work_x1x4x500
+#PBS -N OpenMP
 #PBS -l nodes=1:ppn=4
 #PBS -j oe
 #PBS -q def
 
+export OMP_NUM_THREADS=8
 cd $PBS_O_WORKDIR
 
-mpiexec ./bin/main 500
+./bin/counterpar

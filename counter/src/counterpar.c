@@ -21,7 +21,6 @@ double wtime()
 
 int main(int argc, char *argv[])
 {
-    omp_set_num_threads(2);
     int n = 100000000;
     int *v = malloc(sizeof(*v) * n);
 

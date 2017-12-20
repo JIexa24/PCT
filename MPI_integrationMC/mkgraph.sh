@@ -21,6 +21,6 @@ set tmargin 2
 set mxtics
 
 set output 'result.png'
-plot "test.dat" using 1:2 title "parallel n = 10^7" with linespoints ls 3, \
+plot "test.dat" using 1:2 title "Parallel n = 10^7" with linespoints ls 3, \
 	"lideal.dat" using 1:2 title "Linear Speedup" with linespoints ls 1, \
-	"test2.dat" using 1:2 title "parallel n = 10^8" with linespoints ls 2
+	"test2.dat" using 1:2 title "Parallel n = 10^8" with linespoints ls 2

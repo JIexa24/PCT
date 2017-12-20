@@ -55,8 +55,8 @@ int main(int argc, char *argv[])
   printf("\n");
   MPI_Ssend(NULL, 0, MPI_INT, rank != commsize - 1 ? rank + 1 : MPI_PROC_NULL, 0,
   MPI_COMM_WORLD);
+  //  MPI_Barrier(MPI_COMM_WORLD);
 #endif
-//  MPI_Barrier(MPI_COMM_WORLD);
 
   int row = 0;
   for (int i = 0; i < n - 1; i++) {
