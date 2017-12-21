@@ -1,4 +1,4 @@
-#PBS -N MPI_Course_Work_DecodeMd5
+#PBS -N MPI_Course_Work_DecodeMd5x2x8
 #PBS -l nodes=2:ppn=8
 #PBS -j oe
 #PBS -q release 
