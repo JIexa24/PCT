@@ -14,7 +14,7 @@ set format x "%1.0f"
 set format y "%.1f"
 set xlabel "Processes" font "Arial, 16"
 set ylabel "Speedup" font "Arial, 16"
-set xtics 1 font "Arial, 10"
+set xtics 8 font "Arial, 10"
 set ytics 1 font "Arial, 10"
 set rmargin 4
 set tmargin 2
