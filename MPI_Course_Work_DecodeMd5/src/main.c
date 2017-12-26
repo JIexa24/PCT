@@ -89,7 +89,7 @@ void iteration_brute(int rank, int commsize)
 #endif  
 
       hash(word, &wordhash);
-      if (!strcmp(word, keyword))
+      if (!strcmp(wordhash, keywordhash))
       {
         printf("Word: %s\nWordHash: %s\nTime: %lf\n", word, wordhash, MPI_Wtime() - time);
 	free(word);
