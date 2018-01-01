@@ -83,15 +83,15 @@ int main(int argc, char *argv[])
     }
 
     for (int i = 0; i < commsize; i++){
-      if(i == root) continue;
-      MPI_Recv(&locdet, 1,  MPI_DOUBLE, i,0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+      if (i == root) continue;
+      MPI_Recv(&locdet, 1,  MPI_DOUBLE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
       determinant = determinant * locdet;
     }
 
   } else {
     double locdet = 1;
     int row, j;
-    for (j = rank, row = 0; row < nrows; j+=commsize, ++row) {
+    for (j = rank, row = 0; row < nrows; j += commsize, ++row) {
       locdet = locdet * a[row * n + j];
     }
     MPI_Send(&locdet, 1,  MPI_DOUBLE, root, 0, MPI_COMM_WORLD);
