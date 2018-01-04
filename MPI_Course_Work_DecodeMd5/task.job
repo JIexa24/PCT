@@ -1,8 +1,8 @@
 #PBS -N MPI_Course_Work_DecodeMd5x2x8
-#PBS -l nodes=2:ppn=8
+#PBS -l nodes=cn3:ppn=8
 #PBS -j oe
 #PBS -q release 
 
 cd $PBS_O_WORKDIR
 
-mpiexec ./bin/main 99999
+mpiexec ./bin/main 999
