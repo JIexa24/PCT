@@ -1,9 +1,9 @@
 
-#PBS -N MPI_Course_Work_x1x4x500
-#PBS -l nodes=cn4:ppn=4
+#PBS -N MPI_Course_Work_x8x1x45000
+#PBS -l nodes=8:ppn=1
 #PBS -j oe
-#PBS -q debug
+#PBS -q release
 
 cd $PBS_O_WORKDIR
 
-mpiexec ./bin/main 500
+/opt/mpich/bin/mpirun ./bin/main 45000

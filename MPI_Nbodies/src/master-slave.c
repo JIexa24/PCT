@@ -3,7 +3,7 @@
 #include <sys/time.h>
 #include <math.h>
 #include <mpi.h>
-
+//MPI_ANY_SOURCE
 double wtime()
 {
     struct timeval t;
@@ -17,6 +17,21 @@ struct particle
 };
 
 const double G = 6.67e-11;
+
+int get_chunk(int total, int commsize, int rank)
+{
+  int n = total;
+  int q = n / commsize;
+  if (n % commsize)
+    q++;
+  int r = commsize * q - n;
+  /* Compute chunk size for the process */
+  int chunk = q;
+  if (rank >= commsize - r)
+    chunk = q - 1;
+
+  return chunk;
+}
 
 void calculate_forces(struct particle *p, struct particle *f, double *m, int n)
 {
@@ -63,57 +78,99 @@ void move_particles(struct particle *p, struct particle *f, struct particle *v, 
     }
 }
 
+void master()
+{
+  int i, j , iter = 0, chunk, recvrank;
+  for (i = 0; i < commsize; i++) {
+    for (j = i; j < commsize; j++) {
+      if (iter < commsize) {
+        MPI_Send(task to iter);
+        iter++;
+      } else {
+        MPI_Recv(rank from MPI_ANY_SOURCE);
+        MPI_Send(task to rank);
+      }
+    }
+  }
+}
+
+void slave()
+{
+  while (1) {
+    MPI_Recv(task);
+    if (task != (0,0)) {
+
+    } else break;
+  }
+}
+
 int main(int argc, char *argv[])
 {
-    double ttotal, tinit = 0, tforces = 0, tmove = 0;
-    ttotal = wtime();
-    int n = (argc > 1) ? atoi(argv[1]) : 10;
-    char *filename = (argc > 2) ? argv[2] : NULL;
-    tinit = -wtime();
-    struct particle *p = malloc(sizeof(*p) * n); // Положение частицы
-    struct particle *f = malloc(sizeof(*f) * n); // Сила, действующая на каждую частицу
-    struct particle *v = malloc(sizeof(*v) * n); // Скорость частицы
-    double *m = malloc(sizeof(*m) * n); // Масса частицы
+  double ttotal, tinit = 0, tforces = 0, tmove = 0;
+  ttotal = wtime();
+  int n = (argc > 1) ? atoi(argv[1]) : 10;
+  char *filename = (argc > 2) ? argv[2] : NULL;
+  int rank, commsize, chunk;
+  tinit = -wtime();
+    
+  MPI_Init(&argc, &argv);
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  MPI_Comm_size(MPI_COMM_WORLD, &commsize);
+    
+  struct particle *p = malloc(sizeof(*p) * n); // Положение частицы
+  struct particle *f = malloc(sizeof(*f) * n); // Сила, действующая на каждую частицу
+  struct particle *v = malloc(sizeof(*v) * n); // Скорость частицы
+  double *m = malloc(sizeof(*m) * n); // Масса частицы
+
+  if (rank == root) {
     for (int i = 0; i < n; i++)
     {
-        p[i].x = rand() / (double)RAND_MAX - 0.5;
-        p[i].y = rand() / (double)RAND_MAX - 0.5;
-        p[i].z = rand() / (double)RAND_MAX - 0.5;
-        v[i].x = rand() / (double)RAND_MAX - 0.5;
-        v[i].y = rand() / (double)RAND_MAX - 0.5;
-        v[i].z = rand() / (double)RAND_MAX - 0.5;
-        m[i] = rand() / (double)RAND_MAX * 10 + 0.01;
-        f[i].x = f[i].y = f[i].z = 0;
+      p[i].x = rand() / (double)RAND_MAX - 0.5;
+      p[i].y = rand() / (double)RAND_MAX - 0.5;
+      p[i].z = rand() / (double)RAND_MAX - 0.5;
+      v[i].x = rand() / (double)RAND_MAX - 0.5;
+      v[i].y = rand() / (double)RAND_MAX - 0.5;
+      v[i].z = rand() / (double)RAND_MAX - 0.5;
+      m[i] = rand() / (double)RAND_MAX * 10 + 0.01;
+      f[i].x = f[i].y = f[i].z = 0;
     }
-    tinit += wtime();
-    double dt = 1e-5;
-    for (double t = 0; t <= 1; t += dt) { // Цикл по времени (модельному)
-        tforces -= wtime();
-        calculate_forces(p, f, m, n); // Вычисление сил – O(N^2)
-        tforces += wtime();
-        tmove -= wtime();
-        move_particles(p, f, v, m, n, dt); // Перемещение тел O(N)
-        tmove += wtime();
+  }
+  MPI_Bcast(p);
+  MPI_Bcast(v);
+  MPI_Bcast(m);
+  MPI_Bcast(f);
+  tinit += wtime();
+
+  double dt = 1e-5;
+  
+  if (rank == root) {
+  	master();
+  } else {
+  	slave();
+  }
+    
+  ttotal = wtime() - ttotal;
+  printf("# NBody (n=%d)\n", n);
+  printf("# Elapsed time (sec): ttotal %.6f, tinit %.6f, tforces %.6f, tmove %.6f\n",
+          ttotal, tinit, tforces, tmove);
+  if (filename)
+  {
+    FILE *fout = fopen(filename, "w");
+    if (!fout) {
+      fprintf(stderr, "Can't save file\n");
+      exit(EXIT_FAILURE);
     }
-    ttotal = wtime() - ttotal;
-    printf("# NBody (n=%d)\n", n);
-    printf("# Elapsed time (sec): ttotal %.6f, tinit %.6f, tforces %.6f, tmove %.6f\n",
-           ttotal, tinit, tforces, tmove);
-    if (filename)
-    {
-        FILE *fout = fopen(filename, "w");
-        if (!fout) {
-            fprintf(stderr, "Can't save file\n");
-            exit(EXIT_FAILURE);
-        }
-        for (int i = 0; i < n; i++) {
-            fprintf(fout, "%15f %15f %15f\n", p[i].x, p[i].y, p[i].z);
-        }
-        fclose(fout);
+    for (int i = 0; i < n; i++) {
+      fprintf(fout, "%15f %15f %15f\n", p[i].x, p[i].y, p[i].z);
     }
-    free(m);
-    free(v);
-    free(f);
-    free(p);
-    return 0;
+    fclose(fout);
+  }
+  
+  MPI_Finalize();
+  
+  free(m);
+  free(v);
+  free(f);
+  free(p);
+  return 0;
 }
