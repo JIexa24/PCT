@@ -114,7 +114,7 @@ void run_parallel()
 
 int main(int argc, char **argv)
 {
-  thr = atoi(argv[1]);{
+  thr = atoi(argv[1]);
   ser = atof(argv[2]);
 //  printf("Matrix-vector product (c[m] = a[m, n] * b[n]; m = %d, n = %d)\n", m, n);
 //  printf("Memory used: %" PRIu64"  MiB\n", ((m * n + m + n) * sizeof(double)) >> 20);
