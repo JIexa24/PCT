@@ -80,7 +80,7 @@ void matrix_vector_product_omp_v2(double *a, double *b, double *c, enum sz m, en
   #pragma omp parallel for num_threads(thr)
   for (int i = 0; i < m; i++) {
     c[i] = 0.0;
-    for (int j = 0; j < n; j++)
+    for (int j = 0; j < n; j++) {
       c[i] += a[i * n + j] * b[j];
     }
   }
