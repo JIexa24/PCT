@@ -6,6 +6,7 @@
 #include <inttypes.h>
 int thr;
 double speedup = 0;
+double ser = 0;
 
 //int m = 15000, n = 15000;
 
@@ -38,7 +39,7 @@ void run_serial()
 
   for (int i = 0; i < m; i++) {
     for (int j = 0; j < n; j++)
-      a[i * n + j] = i + j; 
+      a[i * n + j] = i + j;
   }
 
   for (int j = 0; j < n; j++)
@@ -51,7 +52,7 @@ void run_serial()
   t = wtime() - t;
   speedup = t;
   printf("Elapsed time (serial): %.6f sec.\n", t);
-  
+
   free(a);
   free(b);
   free(c);
@@ -64,7 +65,7 @@ void matrix_vector_product_omp(double *a, double *b, double *c, enum sz m, enum 
     int nthreads = omp_get_num_threads();
  //   printf("!!%d!!",thr);
     int threadid = omp_get_thread_num();
-    int items_per_thread = m / nthreads;    
+    int items_per_thread = m / nthreads;
     int lb = threadid * items_per_thread;
     int ub = (threadid == nthreads - 1) ? (m - 1) : (lb + items_per_thread - 1);
 
@@ -75,11 +76,20 @@ void matrix_vector_product_omp(double *a, double *b, double *c, enum sz m, enum 
       }
     }
 }
+void matrix_vector_product_omp_v2(double *a, double *b, double *c, enum sz m, enum sz n) {
+  #pragma omp parallel for num_threads(thr)
+  for (int i = 0; i < m; i++) {
+    c[i] = 0.0;
+    for (int j = 0; j < n; j++)
+      c[i] += a[i * n + j] * b[j];
+    }
+  }
+}
 
 void run_parallel()
 {
   double *a, *b, *c;
-  // Allocate memory for 2-d array 
+  // Allocate memory for 2-d array
   a = malloc(sizeof(*a) * m * n);
   b = malloc(sizeof(*b) * n);
   c = malloc(sizeof(*c) * m);
@@ -95,7 +105,7 @@ void run_parallel()
   double t = wtime();
   matrix_vector_product_omp(a, b, c, m, n);
   t = wtime() - t;
-  speedup = speedup - t;
+  speedup = ser / t;
   printf("Elapsed time (parallel): %.6f sec.\n", t);
   free(a);
   free(b);
@@ -104,10 +114,11 @@ void run_parallel()
 
 int main(int argc, char **argv)
 {
-  thr = atoi(argv[1]);
+  thr = atoi(argv[1]);{
+  ser = atof(argv[2]);
 //  printf("Matrix-vector product (c[m] = a[m, n] * b[n]; m = %d, n = %d)\n", m, n);
 //  printf("Memory used: %" PRIu64"  MiB\n", ((m * n + m + n) * sizeof(double)) >> 20);
-  for(thr; thr <9;thr+=2) {
+  for(thr; thr < 9;thr += 2) {
     run_serial();
     run_parallel();
     printf("\nspeedup %d = %.6lf\n",thr, speedup);
